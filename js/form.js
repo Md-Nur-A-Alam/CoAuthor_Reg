@@ -155,43 +155,85 @@ function initAddressCopy() {
 }
 
 /**
- * Handle File Selection with Real-time Thumbnail Preview
+ * Handle File Selection with Real-time Thumbnail Preview & Client Optimization
  */
 window.handleFileSelected = function(inputEl, key) {
   const file = inputEl.files && inputEl.files[0];
   if (!file) return;
 
-  // Max 5MB check
-  if (file.size > 5 * 1024 * 1024) {
-    alert(`File is too large (${(file.size / (1024 * 1024)).toFixed(2)} MB). Please select an image under 5MB.`);
+  // Max 10MB check
+  if (file.size > 10 * 1024 * 1024) {
+    alert(`File is too large (${(file.size / (1024 * 1024)).toFixed(2)} MB). Please select an image under 10MB.`);
     inputEl.value = '';
     return;
   }
 
   const reader = new FileReader();
   reader.onload = function(e) {
-    const dataUrl = e.target.result;
-    selectedFiles[key] = {
-      file: file,
-      base64: dataUrl,
-      fileName: file.name,
-      mimeType: file.type || 'image/jpeg'
-    };
+    const rawDataUrl = e.target.result;
+    
+    // Optimize image (max dimension 1280px, quality 0.85) to prevent network lag & memory issues
+    optimizeImage(rawDataUrl, file.type, (optimizedDataUrl) => {
+      selectedFiles[key] = {
+        file: file,
+        base64: optimizedDataUrl,
+        fileName: file.name,
+        mimeType: 'image/jpeg'
+      };
 
-    // Update UI Preview
-    const previewBox = document.getElementById(`preview-box-${key}`);
-    const thumbImg = document.getElementById(`thumb-${key}`);
-    const labelEl = document.getElementById(`label-${key}`);
+      // Update UI Preview
+      const previewBox = document.getElementById(`preview-box-${key}`);
+      const thumbImg = document.getElementById(`thumb-${key}`);
+      const labelEl = document.getElementById(`label-${key}`);
 
-    if (previewBox && thumbImg) {
-      thumbImg.src = dataUrl;
-      previewBox.classList.remove('hidden');
-    }
-    if (labelEl) {
-      labelEl.textContent = 'Change File';
-    }
+      if (previewBox && thumbImg) {
+        thumbImg.src = optimizedDataUrl;
+        previewBox.classList.remove('hidden');
+      }
+      if (labelEl) {
+        labelEl.textContent = 'Change File';
+      }
+    });
   };
   reader.readAsDataURL(file);
+};
+
+function optimizeImage(dataUrl, mimeType, callback) {
+  const img = new Image();
+  img.onload = function() {
+    const maxDim = 1280;
+    let width = img.width;
+    let height = img.height;
+
+    if (width > maxDim || height > maxDim) {
+      if (width > height) {
+        height = Math.round((height * maxDim) / width);
+        width = maxDim;
+      } else {
+        width = Math.round((width * maxDim) / height);
+        height = maxDim;
+      }
+    }
+
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, width, height);
+    ctx.drawImage(img, 0, 0, width, height);
+
+    try {
+      const compressed = canvas.toDataURL('image/jpeg', 0.85);
+      callback(compressed);
+    } catch (err) {
+      callback(dataUrl);
+    }
+  };
+  img.onerror = function() {
+    callback(dataUrl);
+  };
+  img.src = dataUrl;
 };
 
 /**

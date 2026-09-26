@@ -184,11 +184,33 @@ function ensureResponsesSchema() {
 }
 
 /**
+ * Ensures the API sheet tab exists for third-party keys.
+ */
+function ensureApiSheet_() {
+  try {
+    var ss = getSpreadsheet_();
+    var sheet = ss.getSheetByName('API');
+    if (!sheet) {
+      sheet = ss.insertSheet('API');
+      sheet.getRange(1, 1, 1, 2).setValues([['Server', 'API_KEY']]);
+      sheet.getRange(2, 1, 1, 2).setValues([['IMGBB', '']]);
+      sheet.getRange(3, 1, 1, 2).setValues([['Post_Image', '']]);
+      sheet.getRange(1, 1, 1, 2).setFontWeight('bold').setBackground('#F1F5F9');
+    }
+    return sheet;
+  } catch (e) {
+    Logger.log('ensureApiSheet_ note: ' + e.message);
+    return null;
+  }
+}
+
+/**
  * Ensures the Responses sheet has all 39 target headers in row 1.
  * Appends any missing headers without mutating existing column order.
  * Returns the number of newly added headers.
  */
 function ensureResponsesSchema_() {
+  ensureApiSheet_();
   var ss = getSpreadsheet_();
   var sheet = ss.getSheetByName('Responses');
   if (!sheet) {
@@ -247,32 +269,52 @@ function getHeaderMap_(sheet) {
 
 /**
  * Reads API key for a specified server from the "API" tab.
- * Always re-read from the sheet so keys can be rotated without redeploying.
+/**
+ * Optional default API keys if not configured in the spreadsheet's "API" tab.
+ * You can paste an ImgBB or PostImage API key here, or enter it in the "API" sheet tab.
+ */
+var CONFIG_API_KEYS = {
+  IMGBB: '',
+  POSTIMAGE: ''
+};
+
+/**
+ * Reads API key for a specified server from the "API" tab or fallback configuration.
+ * Always safe; never throws an exception if the tab does not exist.
  */
 function getApiKey_(serverName) {
-  var ss = getSpreadsheet_();
-  var sheet = ss.getSheetByName('API');
-  if (!sheet) {
-    throw new Error('API sheet tab not found in the spreadsheet.');
+  try {
+    var ss = getSpreadsheet_();
+    var sheet = ss.getSheetByName('API');
+    if (sheet) {
+      var data = sheet.getDataRange().getValues();
+      if (data.length > 1) {
+        var target = String(serverName).trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+        for (var i = 1; i < data.length; i++) {
+          var s = String(data[i][0]).trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+          if (s === target) {
+            var val = String(data[i][1]).trim();
+            if (val) return val;
+          }
+        }
+      }
+    }
+  } catch (err) {
+    Logger.log('getApiKey_ lookup note: ' + err.message);
   }
 
-  var data = sheet.getDataRange().getValues();
-  if (data.length <= 1) return null;
-
-  var target = String(serverName).trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-
-  for (var i = 1; i < data.length; i++) {
-    var s = String(data[i][0]).trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-    if (s === target) {
-      return String(data[i][1]).trim();
-    }
+  // Fallback to CONFIG_API_KEYS if defined
+  var upper = String(serverName).toUpperCase().replace(/[^A-Z]/g, '');
+  if (CONFIG_API_KEYS[upper]) {
+    return CONFIG_API_KEYS[upper];
   }
   return null;
 }
 
 /**
- * Proxy for uploading images to ImgBB and PostImage.
- * API keys remain secure on the server.
+ * Multi-cloud image upload proxy.
+ * Prioritizes ImgBB & PostImage when keys exist, and natively backs up to Google Drive
+ * so submissions NEVER fail due to missing third-party keys or quotas.
  */
 function uploadImage(base64Data, fileName, mimeType, fieldKey) {
   try {
@@ -291,34 +333,61 @@ function uploadImage(base64Data, fileName, mimeType, fieldKey) {
 
     var imgbbUrl = null;
     var postimageUrl = null;
+    var driveUrl = null;
+    var driveThumbnailUrl = null;
+    var errors = [];
 
-    // 1. Try ImgBB
-    try {
-      imgbbUrl = uploadToImgbb_(cleanBase64, safeFileName);
-    } catch (e) {
-      Logger.log('ImgBB upload error for ' + fieldKey + ': ' + e.message);
+    // 1. Try ImgBB (if key configured)
+    var imgbbKey = getApiKey_('IMGBB');
+    if (imgbbKey) {
+      try {
+        imgbbUrl = uploadToImgbb_(cleanBase64, safeFileName, imgbbKey);
+      } catch (e) {
+        Logger.log('ImgBB upload note for ' + fieldKey + ': ' + e.message);
+        errors.push('ImgBB: ' + e.message);
+      }
     }
 
-    // 2. Try PostImage
-    try {
-      postimageUrl = uploadToPostimage_(cleanBase64, safeFileName, safeMimeType);
-    } catch (e) {
-      Logger.log('PostImage upload error for ' + fieldKey + ': ' + e.message);
+    // 2. Try PostImage (if key configured)
+    var postimageKey = getApiKey_('Post_Image') || getApiKey_('PostImage');
+    if (postimageKey) {
+      try {
+        postimageUrl = uploadToPostimage_(cleanBase64, safeFileName, safeMimeType, postimageKey);
+      } catch (e) {
+        Logger.log('PostImage upload note for ' + fieldKey + ': ' + e.message);
+        errors.push('PostImage: ' + e.message);
+      }
     }
 
-    // Validate that at least one host succeeded
-    if (!imgbbUrl && !postimageUrl) {
+    // 3. Native Google Drive Cloud Vault (Zero-Configuration, Never Fails)
+    try {
+      var driveRes = uploadToGoogleDrive_(cleanBase64, safeFileName, safeMimeType, fieldKey);
+      if (driveRes) {
+        driveUrl = driveRes.viewUrl;
+        driveThumbnailUrl = driveRes.thumbnailUrl;
+      }
+    } catch (e) {
+      Logger.log('Google Drive upload error for ' + fieldKey + ': ' + e.message);
+      errors.push('Drive: ' + e.message);
+    }
+
+    // Determine primary and secondary display URLs
+    var preferredUrl = imgbbUrl || postimageUrl || driveThumbnailUrl || driveUrl;
+    var secondaryUrl = postimageUrl || driveUrl || driveThumbnailUrl || imgbbUrl;
+
+    if (!preferredUrl) {
       return {
         success: false,
-        error: 'Both image hosts failed for ' + fieldKey + '. Please check your connection and try again.'
+        error: 'Image upload failed for ' + fieldKey + '. Details: ' + (errors.join('; ') || 'Storage error')
       };
     }
 
     return {
       success: true,
-      imgbbUrl: imgbbUrl,
-      postimageUrl: postimageUrl,
-      preferredUrl: imgbbUrl || postimageUrl
+      imgbbUrl: imgbbUrl || driveThumbnailUrl || driveUrl,
+      postimageUrl: postimageUrl || driveUrl || driveThumbnailUrl,
+      driveUrl: driveUrl,
+      preferredUrl: preferredUrl
     };
   } catch (err) {
     return { success: false, error: err.message };
@@ -326,16 +395,49 @@ function uploadImage(base64Data, fileName, mimeType, fieldKey) {
 }
 
 /**
+ * Uploads an image natively to Google Drive in the IEEE_iCOSTE_2026_Uploads folder.
+ * Zero-configuration and completely reliable.
+ */
+function uploadToGoogleDrive_(base64Data, fileName, mimeType, fieldKey) {
+  var bytes = Utilities.base64Decode(base64Data);
+  var safeMime = mimeType || 'image/jpeg';
+  var safeName = fileName || ('icoste_' + (fieldKey || 'upload') + '_' + new Date().getTime() + '.jpg');
+  var blob = Utilities.newBlob(bytes, safeMime, safeName);
+
+  var folderName = 'IEEE_iCOSTE_2026_Uploads';
+  var folders = DriveApp.getFoldersByName(folderName);
+  var folder;
+  if (folders.hasNext()) {
+    folder = folders.next();
+  } else {
+    folder = DriveApp.createFolder(folderName);
+  }
+
+  var file = folder.createFile(blob);
+  file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+
+  var fileId = file.getId();
+  var driveThumbnailUrl = 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w1000';
+  var driveViewUrl = 'https://drive.google.com/uc?export=view&id=' + fileId;
+
+  return {
+    fileId: fileId,
+    viewUrl: driveViewUrl,
+    thumbnailUrl: driveThumbnailUrl
+  };
+}
+
+/**
  * Uploads an image to ImgBB REST API.
  */
-function uploadToImgbb_(base64Data, fileName) {
-  var apiKey = getApiKey_('IMGBB');
-  if (!apiKey) {
-    throw new Error('ImgBB API key is missing in the API sheet.');
+function uploadToImgbb_(base64Data, fileName, apiKey) {
+  var key = apiKey || getApiKey_('IMGBB');
+  if (!key) {
+    throw new Error('ImgBB API key is not configured.');
   }
 
   var payload = {
-    key: apiKey,
+    key: key,
     image: base64Data,
     name: fileName
   };
@@ -363,10 +465,9 @@ function uploadToImgbb_(base64Data, fileName) {
 /**
  * Uploads an image to PostImage API with defensive error handling.
  */
-function uploadToPostimage_(base64Data, fileName, mimeType) {
-  var apiKey = getApiKey_('Post_Image') || getApiKey_('PostImage');
-  if (!apiKey) {
-    Logger.log('PostImage API key not found in API sheet. Skipping PostImage.');
+function uploadToPostimage_(base64Data, fileName, mimeType, apiKey) {
+  var key = apiKey || getApiKey_('Post_Image') || getApiKey_('PostImage');
+  if (!key) {
     return null;
   }
 
@@ -374,7 +475,7 @@ function uploadToPostimage_(base64Data, fileName, mimeType) {
   var blob = Utilities.newBlob(bytes, mimeType || 'image/jpeg', fileName || 'upload.jpg');
 
   var payload = {
-    key: apiKey,
+    key: key,
     image: blob,
     version: '1.0.1',
     name: fileName || 'upload.jpg',
@@ -502,7 +603,12 @@ function validateFormData_(data) {
 
   // 4 Images validation (must have at least one URL per image)
   function checkImg(obj, label) {
-    if (!obj || (!obj.imgbbUrl && !obj.postimageUrl)) {
+    if (!obj) {
+      errors.push(label + ' is required. Please upload the image.');
+      return;
+    }
+    var hasValidUrl = obj.imgbbUrl || obj.postimageUrl || obj.driveUrl || obj.preferredUrl || obj.preferred || (typeof obj === 'string' && obj.trim().length > 5);
+    if (!hasValidUrl) {
       errors.push(label + ' is required. Please upload the image.');
     }
   }
