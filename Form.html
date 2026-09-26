@@ -82,10 +82,6 @@
           <span id="receipt-sl" class="receipt-val">-</span>
         </div>
         <div class="receipt-row">
-          <span class="receipt-label">Paper ID:</span>
-          <span id="receipt-paper-id" class="receipt-val">-</span>
-        </div>
-        <div class="receipt-row">
           <span class="receipt-label">Full Name:</span>
           <span id="receipt-name" class="receipt-val">-</span>
         </div>
@@ -102,10 +98,7 @@
       <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 1.5rem;">
         <button type="button" id="btn-submit-another" class="nav-btn nav-btn-primary" style="padding: 0.75rem 1.4rem;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg>
-          Register Another Co-Author (Same Paper)
-        </button>
-        <button type="button" id="btn-new-form" class="nav-btn nav-btn-outline" style="color: #334155; border-color: #CBD5E1; padding: 0.75rem 1.4rem;">
-          Submit New Paper Registration
+          Register Another Co-Author
         </button>
       </div>
     </div>
@@ -113,43 +106,14 @@
     <!-- The Public Registration Form -->
     <form id="coauthor-form" novalidate>
 
-      <!-- Section 1: Paper Information -->
-      <section class="content-card">
-        <div class="card-section-header">
-          <div class="icon-badge icon-badge-primary">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-          </div>
-          <div class="card-title-group">
-            <h2>1. Accepted Paper Details</h2>
-            <p>Please enter the exact Paper ID and Title assigned to your accepted manuscript.</p>
-          </div>
-        </div>
-
-        <div class="form-grid">
-          <div class="form-group col-4">
-            <label class="form-label" for="paperId">Paper ID <span class="req-star">*</span></label>
-            <input type="text" id="paperId" name="paperId" class="form-input" placeholder="e.g. ieee-icoste_5213" required autocomplete="off">
-            <div class="input-helper">Format: ieee-icoste_xxxx</div>
-            <div class="input-error" id="err-paperId">Paper ID is required.</div>
-          </div>
-
-          <div class="form-group col-8">
-            <label class="form-label" for="paperTitle">Paper Title <span class="req-star">*</span></label>
-            <input type="text" id="paperTitle" name="paperTitle" class="form-input" placeholder="Enter complete accepted paper title" required autocomplete="off">
-            <div class="input-helper">Must match your accepted manuscript title</div>
-            <div class="input-error" id="err-paperTitle">Paper Title is required.</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Section 2: Personal Information -->
+      <!-- Section 1: Personal Information -->
       <section class="content-card">
         <div class="card-section-header">
           <div class="icon-badge icon-badge-indigo">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
           </div>
           <div class="card-title-group">
-            <h2>2. Co-Author Personal Information</h2>
+            <h2>1. Co-Author Personal Information</h2>
             <p>Provide verified personal details as they appear on official identification documents.</p>
           </div>
         </div>
@@ -222,14 +186,14 @@
         </div>
       </section>
 
-      <!-- Section 3: Academic / Institutional Information -->
+      <!-- Section 2: Academic / Institutional Information -->
       <section class="content-card">
         <div class="card-section-header">
           <div class="icon-badge icon-badge-cyan">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
           </div>
           <div class="card-title-group">
-            <h2>3. Academic &amp; Institutional Affiliation</h2>
+            <h2>2. Academic &amp; Institutional Affiliation</h2>
             <p>Institutional identity and student status details.</p>
           </div>
         </div>
@@ -279,14 +243,14 @@
         </div>
       </section>
 
-      <!-- Section 4: Contact & Social Links -->
+      <!-- Section 3: Contact & Social Links -->
       <section class="content-card">
         <div class="card-section-header">
           <div class="icon-badge icon-badge-teal">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
           </div>
           <div class="card-title-group">
-            <h2>4. Contact &amp; Address Information</h2>
+            <h2>3. Contact &amp; Address Information</h2>
             <p>Active phone numbers, email, address, and profile links for conference correspondence.</p>
           </div>
         </div>
@@ -364,14 +328,14 @@
         </div>
       </section>
 
-      <!-- Section 5: Documents & Photos Upload (4 Upload Slots) -->
+      <!-- Section 4: Documents & Photos Upload (4 Upload Slots) -->
       <section class="content-card">
         <div class="card-section-header">
           <div class="icon-badge icon-badge-primary">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
           </div>
           <div class="card-title-group">
-            <h2>5. Required Documents &amp; Photos</h2>
+            <h2>4. Required Documents &amp; Photos</h2>
             <p>Upload all 4 required images (JPG / PNG, Max 5MB each). Images are securely uploaded via server proxy.</p>
           </div>
         </div>
@@ -520,7 +484,7 @@
         </div>
       </section>
 
-      <!-- Section 6: Declaration & Submit -->
+      <!-- Section 5: Declaration & Submit -->
       <section class="content-card">
         <div class="declaration-card">
           <label class="declaration-label">

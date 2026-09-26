@@ -422,8 +422,6 @@ function validateFormData_(data) {
     }
   }
 
-  req(data.paperId, 'Paper ID');
-  req(data.paperTitle, 'Paper Title');
   req(data.firstName, 'First Name');
   req(data.lastName, 'Last Name');
   req(data.fullName, 'Full Name');
@@ -613,8 +611,8 @@ function submitCoAuthorForm(formData) {
 
     setField("NID Number", String(formData.nidNumber).trim());
     setField("Declaration", "Agreed");
-    setField("Paper ID", String(formData.paperId).trim());
-    setField("Paper Title", String(formData.paperTitle).trim());
+    setField("Paper ID", (formData.paperId ? String(formData.paperId).trim() : ''));
+    setField("Paper Title", (formData.paperTitle ? String(formData.paperTitle).trim() : ''));
 
     // Specific host URLs
     setField("PP Size Photo (ImgBB)", (formData.ppPhoto && formData.ppPhoto.imgbbUrl) || '');
@@ -636,7 +634,7 @@ function submitCoAuthorForm(formData) {
       success: true,
       sl: nextSL,
       timestamp: timestamp,
-      paperId: formData.paperId,
+      paperId: formData.paperId || '',
       fullName: formData.fullName
     };
   } catch (err) {

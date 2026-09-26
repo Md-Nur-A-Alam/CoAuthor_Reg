@@ -1,0 +1,711 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"surface-tint":"#1d5bb9","inverse-primary":"#aec6ff","tertiary":"#4648d4","inverse-on-surface":"#edf0ff","surface-container-highest":"#d9e2fc","outline":"#737784","primary-fixed-dim":"#aec6ff","primary-container":"#3c72d1","on-primary":"#ffffff","on-surface":"#121b2e","on-secondary-fixed":"#001a42","on-tertiary-fixed":"#07006c","on-tertiary-container":"#fffbff","on-surface-variant":"#424752","outline-variant":"#c3c6d4","error":"#ba1a1a","surface-dim":"#d1daf4","on-secondary-container":"#003d87","background":"#f9f9ff","on-error":"#ffffff","on-tertiary-fixed-variant":"#2f2ebe","secondary-container":"#81aafe","surface-variant":"#d9e2fc","on-primary-fixed-variant":"#004396","surface-container-lowest":"#ffffff","secondary":"#2f5cab","tertiary-container":"#6063ee","surface-bright":"#f9f9ff","error-container":"#ffdad6","surface-container-low":"#f1f3ff","on-error-container":"#93000a","on-primary-fixed":"#001a42","on-secondary-fixed-variant":"#0a4491","tertiary-fixed-dim":"#c0c1ff","on-background":"#121b2e","on-tertiary":"#ffffff","surface":"#f9f9ff","on-secondary":"#ffffff","primary-fixed":"#d8e2ff","surface-container-high":"#e1e8ff","on-primary-container":"#fefcff","surface-container":"#e9edff","inverse-surface":"#273044","primary":"#1858b7","secondary-fixed-dim":"#adc6ff","secondary-fixed":"#d8e2ff","tertiary-fixed":"#e1e0ff"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-lg":"1.5rem","margin":"2rem","gutter-mobile":"1rem","space-xs":"0.25rem","space-md":"1rem","space-sm":"0.5rem","space-xl":"2.5rem","gutter":"1.5rem","margin-mobile":"1rem"},"fontFamily":{"label-lg":["Inter"],"display-lg":["Inter"],"label-md":["Inter"],"headline-lg":["Inter"],"body-md":["Inter"],"body-lg":["Inter"],"label-sm":["Inter"],"body-sm":["Inter"],"headline-md":["Inter"],"display-lg-mobile":["Inter"],"headline-sm":["Inter"]},"fontSize":{"label-lg":["14px",{"lineHeight":"20px","letterSpacing":"0.01em","fontWeight":"600"}],"display-lg":["40px",{"lineHeight":"48px","letterSpacing":"-0.02em","fontWeight":"700"}],"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"600"}],"headline-lg":["28px",{"lineHeight":"36px","letterSpacing":"-0.01em","fontWeight":"600"}],"body-md":["14px",{"lineHeight":"22px","letterSpacing":"0em","fontWeight":"400"}],"body-lg":["16px",{"lineHeight":"26px","letterSpacing":"0em","fontWeight":"400"}],"label-sm":["10px",{"lineHeight":"14px","letterSpacing":"0.04em","fontWeight":"700"}],"body-sm":["12px",{"lineHeight":"18px","letterSpacing":"0.01em","fontWeight":"400"}],"headline-md":["22px",{"lineHeight":"30px","letterSpacing":"-0.01em","fontWeight":"600"}],"display-lg-mobile":["30px",{"lineHeight":"38px","letterSpacing":"-0.015em","fontWeight":"700"}],"headline-sm":["18px",{"lineHeight":"26px","letterSpacing":"0em","fontWeight":"600"}]}}}}</script></head><body class="bg-background font-body-md text-on-surface min-h-screen"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col pt-space-md pb-space-lg"><div class="px-space-md pb-space-md flex items-center gap-space-sm"><img alt="i-coste_logo.png" class="h-7 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1XwEs6u4nwumCjeALHxfGLm6qKMqGXBpkEYZi-e2lfPDrO60LS3Ud3h8wJJGW1oaVSMCzOIZks34atHk8Od2gH32TjUpAif2e_RpHRPD2QVGiwzgYerv__S9rjJYVr8eH0yYlCRazN2yW96cDVkSAuymMXZKRHIk7PlH-hRZ5am7ZLL8u1UP0Y7Rvkn8SMpSuuOrNhByMoIZ1NEGhTB0hdeEUH7e91nv-x_z_Bo30hY9bGYrg9lxkVTNuJ41SuAW9o9V0st2MJf"><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-primary font-bold leading-none">i-COSTE</span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Admin Portal</span></div></div><div class="px-space-md py-space-xs"><div class="p-2.5 rounded-lg bg-surface-container text-on-surface-variant font-label-sm text-label-sm"><span class="font-bold text-primary block mb-0.5">12th Edition</span>Cox's Bazar, Bangladesh</div></div><nav class="flex-1 px-space-sm mt-space-md space-y-1" data-active-classes="bg-primary-container text-on-primary-container font-bold"><a aria-current="page" class="flex items-center gap-space-sm px-3 py-2.5 rounded-lg transition-all bg-primary-container text-on-primary-container font-bold" data-path="admin-portal" href="#"><span class="material-symbols-outlined text-[20px]">admin_panel_settings</span>Admin Portal</a><a class="flex items-center gap-space-sm px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all font-label-md text-label-md" data-path="registration-form" href="#"><span class="material-symbols-outlined text-[20px]">how_to_reg</span>Registration Form</a><a class="flex items-center gap-space-sm px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all font-label-md text-label-md" data-path="registration-confirmation" href="#"><span class="material-symbols-outlined text-[20px]">verified</span>Confirmation</a></nav><div class="px-space-md pt-space-sm"><div class="p-3 rounded-xl bg-surface-container-low flex items-center gap-space-sm"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="overflow-hidden"><p class="font-label-md text-label-md text-on-surface truncate">IEEE Chair</p><p class="font-body-sm text-body-sm text-on-surface-variant truncate">secretariat@i-coste.org</p></div></div></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-surface-container-lowest/95 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex items-center gap-space-sm"><span class="font-label-md text-label-md px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant">IEEE i-COSTE 2026 Admin Session</span></div><div class="flex items-center gap-space-md"><a class="inline-flex items-center gap-1 font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Conference Website<span class="material-symbols-outlined text-[14px]">open_in_new</span></a><a class="inline-flex items-center gap-1 font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Venue Info<span class="material-symbols-outlined text-[14px]">location_on</span></a><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="relative pt-16 bg-background w-full px-space-lg min-h-screen"><div class="flex flex-col w-full pb-space-xl">
+<!-- Top Session & Sheet Integration Status Banner -->
+<div class="w-full bg-surface-container-lowest rounded-xl p-space-md shadow-sm mb-space-lg flex flex-col xl:flex-row items-start xl:items-center justify-between gap-space-md">
+<div class="flex flex-wrap items-center gap-space-md">
+<div class="flex items-center gap-space-sm bg-surface-container-low px-3 py-1.5 rounded-lg">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary-container animate-pulse"></span>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Authorized Administrator</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-highest text-primary font-label-sm text-label-sm">SUPER_ADMIN</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-semibold">mdnuralam@gmail.com</span>
+</div>
+</div>
+<div class="hidden sm:flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm bg-surface-container px-3 py-1.5 rounded-lg">
+<span class="material-symbols-outlined text-primary text-[18px]">timer</span>
+<span>20-min Sliding Cache: <strong class="text-on-surface font-label-md text-label-md">18:42 remaining</strong></span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm bg-surface-container-low px-3 py-1.5 rounded-lg">
+<span class="material-symbols-outlined text-primary text-[18px]">table_chart</span>
+<span>Linked Sheet: <code class="font-mono text-primary font-semibold">1SL8JUzc...okZo</code> (37 cols, <strong class="text-on-surface">100% Synced</strong>)</span>
+</div>
+</div>
+<!-- Global Fast Sync & Export Tools -->
+<div class="flex items-center gap-space-sm w-full xl:w-auto justify-end">
+<button class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-container-high text-primary hover:bg-surface-container-highest transition-colors font-label-md text-label-md shadow-sm" id="sync-sheet-btn">
+<span class="material-symbols-outlined text-[18px]" id="sync-icon">sync</span>
+<span>Sync Sheet Now</span>
+</button>
+<button class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-on-primary hover:bg-surface-tint transition-all font-label-md text-label-md shadow-sm">
+<span class="material-symbols-outlined text-[18px]">download</span>
+<span>Export All to CSV (37 Cols)</span>
+</button>
+</div>
+</div>
+<!-- Key Metrics Bento Row -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-space-md mb-space-lg">
+<!-- Total Submissions -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant block mb-1">Total Registrations</span>
+<h2 class="font-display-lg text-display-lg text-on-surface font-bold">148</h2>
+<span class="font-body-sm text-body-sm text-primary font-semibold inline-flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[16px]">trending_up</span> +12 co-authors today
+          </span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-primary-fixed flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[24px]">group</span>
+</div>
+</div>
+<div class="mt-4 pt-3 bg-surface-container-low -mx-space-md -mb-space-md px-space-md py-2 flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span>Target: 200 Co-authors</span>
+<span class="font-label-sm text-label-sm font-bold text-on-surface">74% Met</span>
+</div>
+</div>
+<!-- Unique Accepted Papers -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant block mb-1">Unique Accepted Papers</span>
+<h2 class="font-display-lg text-display-lg text-on-surface font-bold">64</h2>
+<span class="font-body-sm text-body-sm text-on-surface-variant inline-flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[16px]">analytics</span> Avg 2.31 authors/paper
+          </span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center text-secondary shrink-0">
+<span class="material-symbols-outlined text-[24px]">description</span>
+</div>
+</div>
+<div class="mt-4 pt-3 bg-surface-container-low -mx-space-md -mb-space-md px-space-md py-2 flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span>Across 8 IEEE Technical Tracks</span>
+<span class="font-label-sm text-label-sm font-bold text-secondary">Verified</span>
+</div>
+</div>
+<!-- Review Flags / Pending -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant block mb-1">Pending Review / Flags</span>
+<h2 class="font-display-lg text-display-lg text-error font-bold">06</h2>
+<span class="font-body-sm text-body-sm text-error font-semibold inline-flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[16px]">warning</span> Action required on credentials
+          </span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-error-container flex items-center justify-center text-error shrink-0">
+<span class="material-symbols-outlined text-[24px]">pending_actions</span>
+</div>
+</div>
+<div class="mt-4 pt-3 bg-error-container/40 -mx-space-md -mb-space-md px-space-md py-2 flex items-center justify-between text-on-error-container font-body-sm text-body-sm">
+<span>4 Image blurs • 2 Payment slips</span>
+<button class="font-label-sm text-label-sm font-bold underline cursor-pointer">Resolve Now</button>
+</div>
+</div>
+<!-- Cloud Media Synced -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant block mb-1">Cloud Media Vault</span>
+<h2 class="font-display-lg text-display-lg text-on-surface font-bold">592</h2>
+<span class="font-body-sm text-body-sm text-on-surface-variant inline-flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[16px]">cloud_done</span> ImgBB &amp; PostImage Mirror
+          </span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-tertiary-fixed flex items-center justify-center text-tertiary shrink-0">
+<span class="material-symbols-outlined text-[24px]">perm_media</span>
+</div>
+</div>
+<div class="mt-4 pt-3 bg-surface-container-low -mx-space-md -mb-space-md px-space-md py-2 flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span>Latency: 42ms SSL</span>
+<span class="font-label-sm text-label-sm font-bold text-tertiary">100% Retrievable</span>
+</div>
+</div>
+</div>
+<!-- Search & Filter Controls Matrix -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm mb-space-md space-y-space-md">
+<div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-space-md">
+<!-- Universal Input Search -->
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+<input class="w-full pl-10 pr-4 py-2.5 bg-surface-container-low rounded-lg text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none transition-all" id="author-search-input" placeholder="Search by Paper ID (ieee-icoste_XXXX), Author Name, Email, University or Phone..." type="text">
+</div>
+<!-- District and Track Selectors -->
+<div class="flex flex-wrap sm:flex-nowrap items-center gap-space-sm shrink-0">
+<div class="relative">
+<select class="appearance-none bg-surface-container-low pl-3 pr-8 py-2.5 rounded-lg font-label-md text-label-md text-on-surface focus:outline-none cursor-pointer">
+<option value="">District / Division (All Bangladesh)</option>
+<option value="dhaka">Dhaka Division</option>
+<option value="chattogram">Chattogram Division</option>
+<option value="rajshahi">Rajshahi Division</option>
+<option value="khulna">Khulna Division</option>
+<option value="sylhet">Sylhet Division</option>
+</select>
+<span class="material-symbols-outlined pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">expand_more</span>
+</div>
+<div class="relative">
+<select class="appearance-none bg-surface-container-low pl-3 pr-8 py-2.5 rounded-lg font-label-md text-label-md text-on-surface focus:outline-none cursor-pointer">
+<option value="">Presentation Mode</option>
+<option value="physical">In-Person (Cox's Bazar)</option>
+<option value="virtual">Virtual / Online Hybrid</option>
+</select>
+<span class="material-symbols-outlined pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">expand_more</span>
+</div>
+<button class="p-2.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant transition-colors" title="Toggle Density View">
+<span class="material-symbols-outlined text-[20px]">view_column</span>
+</button>
+</div>
+</div>
+<!-- Filter Quick Chips Row -->
+<div class="flex flex-wrap items-center gap-2 pt-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mr-2">Quick Filters:</span>
+<button class="px-3 py-1 rounded-full bg-primary text-on-primary font-label-md text-label-md shadow-sm">All (148)</button>
+<button class="px-3 py-1 rounded-full bg-error-container text-on-error-container font-label-md text-label-md hover:bg-error-container/80 transition-colors">Pending Review (6)</button>
+<button class="px-3 py-1 rounded-full bg-surface-container text-on-surface hover:bg-surface-container-high font-label-md text-label-md transition-colors">Verified (142)</button>
+<div class="h-4 w-[1px] bg-outline-variant mx-1"></div>
+<button class="px-3 py-1 rounded-full bg-surface-container text-on-surface-variant hover:bg-surface-container-high font-label-md text-label-md transition-colors">BUBT (78)</button>
+<button class="px-3 py-1 rounded-full bg-surface-container text-on-surface-variant hover:bg-surface-container-high font-label-md text-label-md transition-colors">Univ of Dhaka (24)</button>
+<button class="px-3 py-1 rounded-full bg-surface-container text-on-surface-variant hover:bg-surface-container-high font-label-md text-label-md transition-colors">RUET (18)</button>
+<button class="px-3 py-1 rounded-full bg-surface-container text-on-surface-variant hover:bg-surface-container-high font-label-md text-label-md transition-colors">WUST Affiliates (12)</button>
+</div>
+</div>
+<!-- Batch Action Toolbar (Conditionally Visible or Persistent Multi-Select) -->
+<div class="flex items-center justify-between bg-surface-container-high px-space-md py-2.5 rounded-lg mb-space-sm text-on-surface">
+<div class="flex items-center gap-space-md">
+<label class="flex items-center gap-2 cursor-pointer font-label-md text-label-md">
+<input class="w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer" type="checkbox">
+<span>Select All on Page (Displaying 4 of 148 Dossiers)</span>
+</label>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1 rounded-lg bg-surface-container-lowest text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm shadow-sm inline-flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">verified</span> Bulk Verify
+      </button>
+<button class="px-3 py-1 rounded-lg bg-surface-container-lowest text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm shadow-sm inline-flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">mail</span> Dispatch IEEE ID Slips
+      </button>
+<button class="px-3 py-1 rounded-lg bg-surface-container-lowest text-error hover:bg-error-container/40 font-label-sm text-label-sm shadow-sm inline-flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">delete</span> Delete Selected
+      </button>
+</div>
+</div>
+<!-- Primary Dossier Data Table -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left font-body-sm text-body-sm">
+<thead class="bg-surface-container text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">
+<tr>
+<th class="py-3 px-4 w-12 text-center">
+<input class="w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer" type="checkbox">
+</th>
+<th class="py-3 px-3 w-16">SL #</th>
+<th class="py-3 px-4">Submission / Paper ID</th>
+<th class="py-3 px-4">Author Profile &amp; Affiliation</th>
+<th class="py-3 px-4">Direct Contact</th>
+<th class="py-3 px-4">Cloud Proofs (4 Assets)</th>
+<th class="py-3 px-4">Verification</th>
+<th class="py-3 px-4 text-right">Dossier Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-low text-on-surface">
+<!-- Row 1: SL #148 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group">
+<td class="py-3 px-4 text-center">
+<input class="w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer" type="checkbox">
+</td>
+<td class="py-3 px-3 font-mono font-semibold text-primary">#148</td>
+<td class="py-3 px-4">
+<div class="flex flex-col">
+<span class="font-mono font-bold text-on-surface bg-surface-container px-2 py-0.5 rounded text-xs w-max">ieee-icoste_5213</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Track: AI &amp; Smart Grids</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">2026-03-29 14:22:10 BST</span>
+</div>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-surface-container-high flex items-center justify-center font-bold text-primary shrink-0">
+                  MR
+                </div>
+<div class="min-w-0">
+<p class="font-label-md text-label-md font-bold text-on-surface truncate">Mohammad Tanvir Rahman</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Bangladesh University of Business &amp; Tech (BUBT)</p>
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-secondary">
+<span class="material-symbols-outlined text-[14px]">school</span> Dept. of CSE • Student Track
+                  </span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4">
+<div class="flex flex-col">
+<a class="text-primary hover:underline font-label-md text-label-md" href="mailto:tanvir@bubt.edu.bd">tanvir@bubt.edu.bd</a>
+<span class="text-on-surface-variant font-mono text-body-sm">+880 1712-493821</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Mirpur-2, Dhaka</span>
+</div>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-1.5">
+<div class="relative group/thumb cursor-pointer">
+<img class="w-9 h-9 rounded object-cover shadow-sm hover:scale-110 transition-transform" data-alt="High resolution passport photograph of student author against plain white background with formal attire." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDN8CN3mZSZK_E_0aM28gF5wIK4PtwYMqopT-kGr4MILOCkqHXBMKWd9kY5Xwwvzs5bDugo8tiIbQ0lLsLP5ie3FFvReBxXUyV8Pzaht4az1f4d-o2DNpRH13_1tcvm-mqFNO8o3XSXV1CWb5nQ9Gg0sKQsxSIGL_SUfTiBSH1rPgdQ3rrpaUnz_DUKDDnieosYKx97crH5tcdlHfRQvcK4W22HSzlZsmroyxvFwqnfSKPxmyHbH61f">
+<span class="absolute -bottom-1 -right-1 bg-surface-container-lowest text-on-surface font-label-sm text-[9px] px-1 rounded shadow">PP</span>
+</div>
+<div class="relative group/thumb cursor-pointer">
+<img class="w-9 h-9 rounded object-cover shadow-sm hover:scale-110 transition-transform" data-alt="Scanned Bangladesh University student identification card front face showing ID barcode and stamp." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcWJFDpQpmY1WfwlOfMo9AF6AShkG5HY-aODQW6bhSY65Zm6MWGHsaV7HE05MoUHXSzYXzw3JdWmtbtbQrKjmJhOPzWW82lSVDNzD_agVXeB3h9n8RKy_PF4l1dWjZ5mVhWf1btrhKaR2KsSfdtsPd18J6sc3JAYN9ituAbEa0c2QIw7uOh_NXJUNqfAq2ckQvHrkkgB51U_kZabwd7-KjQy5h4_rYlJztlnnPV1lIsfezlOcjlunZ">
+<span class="absolute -bottom-1 -right-1 bg-surface-container-lowest text-on-surface font-label-sm text-[9px] px-1 rounded shadow">ID</span>
+</div>
+<div class="relative group/thumb cursor-pointer">
+<img class="w-9 h-9 rounded object-cover shadow-sm hover:scale-110 transition-transform" data-alt="Official university academic registration slip document with seal and semester confirmation." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDoq3J-h8DLSaBNN4sVD_0Db2X_RCUjQT_EY8iN_N3xCn2BbOPZDzYJVGn9WgvAICV6EuScEODy9hiB6gssIj9AOi7I5Ve6zFqEDOv052Vc9ON-Oihq1EsaRO0bXhlIBenT2pBUeR8Cu-AxH5ub8vYmkrMWZrTpAoJ-xUMq8cEuTvG05npn19fX5A969EllBoZ1Rgyg30Ig73sownlhBnIH_KyHJGEmFoEZHBedLkNm2vQTDCWcRD16">
+<span class="absolute -bottom-1 -right-1 bg-surface-container-lowest text-on-surface font-label-sm text-[9px] px-1 rounded shadow">REG</span>
+</div>
+<div class="relative group/thumb cursor-pointer">
+<img class="w-9 h-9 rounded object-cover shadow-sm hover:scale-110 transition-transform" data-alt="Clean digitized scanned signature of researcher in blue ballpoint ink on clean document." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfQJe3rvDY8P5Sh1St7xV7fR5s2eD_BorA_nafOkijo9vexv_rWBe8xgYHiMkryz5-SuQKB46PJtdqnr12MDZamAIr5j6cVhIEkG5ws9TeFk2-SjTPPh-LcWAelR3mT7bkBwOEoRScLiHU8Ty44hDSz8EgMjiO255gpL2EDYsY9IhZUt31nohCE0eYLO_SjTu3xpcN-my4rxFtYXNkO41MyiwsTJVt6U8h7LEbgPOzXBICg0SgRcg8">
+<span class="absolute -bottom-1 -right-1 bg-surface-container-lowest text-on-surface font-label-sm text-[9px] px-1 rounded shadow">SIG</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container text-primary font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+                Verified (All 37)
+              </span>
+</td>
+<td class="py-3 px-4 text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg hover:bg-surface-container text-primary" onclick="openDossierModal('Mohammad Tanvir Rahman', 'ieee-icoste_5213', 'BUBT', 'tanvir@bubt.edu.bd', '+880 1712-493821')" title="View 37-Column Full Dossier">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+<button class="p-1.5 rounded-lg hover:bg-surface-container text-on-surface-variant hover:text-on-surface" title="Download ZIP Archive">
+<span class="material-symbols-outlined text-[20px]">folder_zip</span>
+</button>
+<button class="p-1.5 rounded-lg hover:bg-surface-container text-on-surface-variant hover:text-on-surface" title="Edit Metadata">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2: SL #147 (Review Needed) -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group bg-error-container/10">
+<td class="py-3 px-4 text-center">
+<input class="w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer" type="checkbox">
+</td>
+<td class="py-3 px-3 font-mono font-semibold text-error">#147</td>
+<td class="py-3 px-4">
+<div class="flex flex-col">
+<span class="font-mono font-bold text-on-surface bg-surface-container px-2 py-0.5 rounded text-xs w-max">ieee-icoste_4891</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Track: Renewable Photovoltaics</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">2026-03-29 13:45:04 BST</span>
+</div>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-error-container text-error flex items-center justify-center font-bold shrink-0">
+                  NF
+                </div>
+<div class="min-w-0">
+<p class="font-label-md text-label-md font-bold text-on-surface truncate">Nusrat Jahan Faria</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">University of Dhaka (DU)</p>
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">school</span> Dept. of EEE • Co-Author 02
+                  </span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4">
+<div class="flex flex-col">
+<a class="text-primary hover:underline font-label-md text-label-md" href="mailto:nusrat.jahan@du.ac.bd">nusrat.jahan@du.ac.bd</a>
+<span class="text-on-surface-variant font-mono text-body-sm">+880 1845-920112</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Curzon Hall, Dhaka</span>
+</div>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-1.5">
+<img class="w-9 h-9 rounded object-cover shadow-sm" data-alt="Official university ID photograph of young female researcher with white lab coat background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVcvKxUItWqPlKESxn1jc98bQGVo-Owg_2mlCfW4lQhtSMNRUywU0yYCh_W_4r_r3WBzcWgbX3NhPZJdR9JleWx3QKKCxBZKOGBG9M_wSDtsnGfTAfFDwE5BG4MnNpJz3NklABlvpbuk_zwNP9zRnQtLArrGnRP8CC4-vJAhwFiMwuZSwVdiktWgrMudZYGggysbM4pzV3CDiPsFdnUb5gv6zOP1_Xa8g3xTtoIvQntVLXV4H0VaLF">
+<img class="w-9 h-9 rounded object-cover shadow-sm" data-alt="University student ID badge showing valid enrolment session 2024-2026." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcvLmZ61hcHMuKFfkIdLpE38mr6ip_RMhpTCIQ3LYbPi24kZi3ISA_JcOacZGz1gM8II24fbHg6jfosTPxZmr5mauoSYXL1lzIeGqJsBNbfZFO8VrWTWPFvmsR0OvylHxdt6bezV1ltIkfaaO-LLyv3UJt-iXjLBYUtCN5l38L4Wr9zi9U9yZZicovKB8wkug5o_C7pBz4VA0A6UBOEKR7XKiMgyOc8pGzgXj9PILP6p6IWfLufwl8">
+<div class="relative">
+<img class="w-9 h-9 rounded object-cover shadow-sm opacity-60" data-alt="Blurred paper scan showing illegible receipt text and obscured university seal requiring re-upload." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAG1fGCYuvh7ntCa2JMLSPtAEuSX-ShpMcGPyp3rD7aeXAN3crJjOJuQAT8p-ijnNRuUqZCnSrElT_MzNSL5fUG3-PfjMDKBjG7oghn3Ip4A50Hqiz8sE2kRzFXF7UgP3S5sP_mqwnL6tJ0Ey3Km_XMi1SC5VHUmuHGS3PdPcJ9_m6S8rq0q1-RyVSGVYbmzAL8c4aBiivvLdjlImktHk4eErM7HobJ8Jv3Q6cGonVeRGIuG2NLHVIs">
+<span class="absolute inset-0 bg-error/30 flex items-center justify-center rounded">
+<span class="material-symbols-outlined text-white text-[16px]">priority_high</span>
+</span>
+</div>
+<img class="w-9 h-9 rounded object-cover shadow-sm" data-alt="Author digital handwritten signature specimen." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLabbECP8HQAG9WUsyWpT7G5RhH0QwPCpwr6KcOQeNYuGm004VP5I86mxsDzWT5iGP7_Nsrrn36K1gXhxeMa14ymUqUBM40IgbY2Tu1a6JE373D0TDiaEKU8_leNRzqLAmKfryudiD93ewl5EetDCfyeYu_SVuCl692bpsNT5iPwmjoOaCN1odNRp0P65pnvZIjyaraGx8_QR42XTM0DRR3EJzViNJDw0T9sgiC3N7S-0_-k8CScwt">
+</div>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+                Reg Card Blur Flag
+              </span>
+</td>
+<td class="py-3 px-4 text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg hover:bg-surface-container text-primary" onclick="openDossierModal('Nusrat Jahan Faria', 'ieee-icoste_4891', 'University of Dhaka', 'nusrat.jahan@du.ac.bd', '+880 1845-920112')" title="Review Dossier">
+<span class="material-symbols-outlined text-[20px]">troubleshoot</span>
+</button>
+<button class="p-1.5 rounded-lg hover:bg-surface-container text-on-surface-variant" title="Request Re-scan">
+<span class="material-symbols-outlined text-[20px]">forward_to_inbox</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3: SL #146 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group">
+<td class="py-3 px-4 text-center">
+<input class="w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer" type="checkbox">
+</td>
+<td class="py-3 px-3 font-mono font-semibold text-primary">#146</td>
+<td class="py-3 px-4">
+<div class="flex flex-col">
+<span class="font-mono font-bold text-on-surface bg-surface-container px-2 py-0.5 rounded text-xs w-max">ieee-icoste_3102</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Track: Signal Processing &amp; 6G</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">2026-03-29 11:15:33 BST</span>
+</div>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center font-bold shrink-0">
+                  AK
+                </div>
+<div class="min-w-0">
+<p class="font-label-md text-label-md font-bold text-on-surface truncate">Dr. A. K. Azad</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Rajshahi Univ of Engineering &amp; Tech (RUET)</p>
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-tertiary">
+<span class="material-symbols-outlined text-[14px]">stars</span> Senior Member IEEE • Faculty Track
+                  </span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4">
+<div class="flex flex-col">
+<a class="text-primary hover:underline font-label-md text-label-md" href="mailto:azad@ece.ruet.ac.bd">azad@ece.ruet.ac.bd</a>
+<span class="text-on-surface-variant font-mono text-body-sm">+880 1711-209482</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Kazla, Rajshahi</span>
+</div>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-1.5">
+<img class="w-9 h-9 rounded object-cover shadow-sm" data-alt="Distinguished university professor portrait photograph in conference auditorium attire." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfQvZnv3zeJUr7_eNuCisS7rsY9h7NuNB2eHoLjLDyoWwYGtHX1M5K_1kz3A9H8GgkkHNMseok6lMypDXZW6nw2bKEqu4WV_vwuTfeAZA-9RLkbuLqwABYLGwGtk2hC9olL7kxOqxWPpUxpXp_BdkhEaZJzf9W0gJG_v63CfWiddlQhBLXlN6IxCKgjqG7x9pHOw7oF0kBUyBdYozkFbRhRoGDxK69HLJwdK62Ar6Zz9PYV1CHK6dp">
+<img class="w-9 h-9 rounded object-cover shadow-sm" data-alt="Official faculty staff identity card of RUET engineering department." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3mEx_5Mjt5J1pq-zRKMT3By1do-UkmC_qie0cpmEIDVGHPMCwDvJTnUsgRXkSwjGmvS03C8z7v_et3-ECvU6DlDx_7Ui_pt5Fzw9RDti1v-HWNjm2gvhhLizz59vCdRiWGq3IrUtPgry43Hn8r6SDrPx5cterVep7UjYC1Hpyzfdyf0cUfaYDxn0PggKxKlbYLE1ph3PbZuL0Vjg3ViI9brydm99MOInu2wI0HxKhLyVYPiheauvF">
+<img class="w-9 h-9 rounded object-cover shadow-sm" data-alt="IEEE Senior Member Certificate copy in official navy blue and gold layout." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEP5TEX-_UWdJzQpN_bHagMWU3k9NM8LCbbN_AAffUwby4WzWg2GA_qQxjqaKB33cp9hzq4WUVY5u1husPj_ooPBWdBCAQxs3uCHTtfKR_o1Be2rKXnRvUfAIsGVdXvSY3uwmSTYMnv0_1Q4O4MApnaQXSjhuxanGadKshG9ezYo8Mrwrwx-IrAOfQWRfmN_oUQSYQqv7ZA9UB2VvO0mLfHG1p42R8I60wQWTbH0E_OWZeGDg5kZ7p">
+<img class="w-9 h-9 rounded object-cover shadow-sm" data-alt="Principal investigator signature for IEEE conference paper proceedings." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDT0Ir3Wp2ToEbnkHyA5HxSuHtk4l2vDqkb2PD5Jvdft--AUP3X_Q8d-_gZ7cNCH_pX_ueIMMmJo73YS83Amep9m6rVCXyUo2uZFCK53cE9gnyS13uCKnkkADjCL1RMTG2c6NQzAdw-5wlNb388ei45XzwbQHDQOR9C1xY_s51BKispyGwNjPbAnwLfS7F2ar01UiqRzG9WXCihBmLjmW6jMhGx0ljDOO4xm5vuTBIWEwSb55PcNBcf">
+</div>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container text-primary font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+                Verified IEEE Fellow
+              </span>
+</td>
+<td class="py-3 px-4 text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg hover:bg-surface-container text-primary" onclick="openDossierModal('Dr. A. K. Azad', 'ieee-icoste_3102', 'RUET', 'azad@ece.ruet.ac.bd', '+880 1711-209482')" title="View 37-Column Full Dossier">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+<button class="p-1.5 rounded-lg hover:bg-surface-container text-on-surface-variant" title="Download ZIP Archive">
+<span class="material-symbols-outlined text-[20px]">folder_zip</span>
+</button>
+<button class="p-1.5 rounded-lg hover:bg-surface-container text-on-surface-variant" title="Edit Metadata">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4: SL #145 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group">
+<td class="py-3 px-4 text-center">
+<input class="w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer" type="checkbox">
+</td>
+<td class="py-3 px-3 font-mono font-semibold text-primary">#145</td>
+<td class="py-3 px-4">
+<div class="flex flex-col">
+<span class="font-mono font-bold text-on-surface bg-surface-container px-2 py-0.5 rounded text-xs w-max">ieee-icoste_5213</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Track: AI &amp; Smart Grids</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">2026-03-29 09:50:18 BST</span>
+</div>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-bold shrink-0">
+                  RK
+                </div>
+<div class="min-w-0">
+<p class="font-label-md text-label-md font-bold text-on-surface truncate">S. M. Rayhan Kabir</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Bangladesh University of Business &amp; Tech (BUBT)</p>
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-secondary">
+<span class="material-symbols-outlined text-[14px]">group</span> Co-Author 02 • Undergrad Student
+                  </span>
+</div>
+</div>
+</td>
+<td class="py-3 px-4">
+<div class="flex flex-col">
+<a class="text-primary hover:underline font-label-md text-label-md" href="mailto:rayhan.kabir@bubt.edu.bd">rayhan.kabir@bubt.edu.bd</a>
+<span class="text-on-surface-variant font-mono text-body-sm">+880 1923-882103</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Rupnagar R/A, Dhaka</span>
+</div>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-1.5">
+<img class="w-9 h-9 rounded object-cover shadow-sm" data-alt="Color student identity photo taken against neutral studio background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmvqr67sM5yBekqn9Sj5krAAz1s76FEtrRybLG73XkzCzCudiuvD_iJioPetWHbmOlKdyQm_BSsGr5KNdK3Emxu0qnpv3Er5BWQFLe-8gNPGdgwyXVpzce9nwnxBFB_4GF4cEdAxepTwl0FMgx48j6pCpA5l7PtaXPXO9kkcewbI3wFpDqx8AUU7nwMrZb80BTnjX44FSy007zeX_yYRW3QL-DwAxvZr4i3CkRUJjJqPXdnjQA5NCt">
+<img class="w-9 h-9 rounded object-cover shadow-sm" data-alt="Student university identity card of BUBT department of computer science." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgaus8jmqJ_fnTnvfLYtkUj-d96u-pcelMA6kna4RIpAzF4cl2bjreBq4IL2gAQ9gtSXjJEG_E6tnT3JdGzlloGnaAFkT2HMRlPDt0yXhALtDRtYO0Ombnr7WWoNp2gPNPmNJ68nlVC8Gv6jv8UZHZfV3l8aKd08CrQBCWCrtnWZRvwp2yZdPv38OruUSnRB6z5BuzwN1W9B8ehfW1unDWdx5IMhuHoRrfQAR4IomRaXAItAZGNp3B">
+<img class="w-9 h-9 rounded object-cover shadow-sm" data-alt="Valid IEEE Student Membership card digital snapshot with active expiry date." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCfvf6CweAw8df0dJidKMn9PVLHHFygR8wKxF8C1Enqi2kYStKexuU_WdOW_pKMtgbTUiZ5f5mZ0y8QGHYEzUaRxUsB7JTjlufExma8W5mm98swRjNy_kkOmkXbteDzVc7i54bGyZyoN6B88iDLbdT-cwKeZ_hii4O6z29XCSmapQvjqeta6yRoxsLxVOWT0qURJHWCQC-LnDsIAfR_zv2X3anjy0ncG7shXHEezxeedbpbtFSwqvX">
+<img class="w-9 h-9 rounded object-cover shadow-sm" data-alt="Author personal handwritten sign script." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuM4STSTvZb561KV9KvAVRph3lx0a9jhD6rSZYu5flef-LFI76YclPb-31kE6pMH0yjYM-K3Q9VxMlBKgQhccBi6NVdHXuVuacOUfBpLdTJIw5Id7lx-DF0ij0eDiHxkzSXKo1MgsFqn1KIGAOgjALvsL0RdQnG46yCpF1ot2PG4gAz8i8m__57c6k-8yTmI_LnLrRhhdI4-8OXrQGujlZtbbWcAtlftNkocCr9dhMAKCO97-pp74i">
+</div>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container text-primary font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+                Verified (All 37)
+              </span>
+</td>
+<td class="py-3 px-4 text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg hover:bg-surface-container text-primary" onclick="openDossierModal('S. M. Rayhan Kabir', 'ieee-icoste_5213', 'BUBT', 'rayhan.kabir@bubt.edu.bd', '+880 1923-882103')" title="View 37-Column Full Dossier">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+<button class="p-1.5 rounded-lg hover:bg-surface-container text-on-surface-variant" title="Download ZIP Archive">
+<span class="material-symbols-outlined text-[20px]">folder_zip</span>
+</button>
+<button class="p-1.5 rounded-lg hover:bg-surface-container text-on-surface-variant" title="Edit Metadata">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Pagination & Footer Controls -->
+<div class="px-space-md py-space-md bg-surface-container-low flex flex-col sm:flex-row items-center justify-between gap-space-md">
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<span>Rows per page:</span>
+<select class="bg-surface-container-lowest px-2 py-1 rounded border-none font-label-md text-label-md text-on-surface focus:outline-none">
+<option>25</option>
+<option>50</option>
+<option>100</option>
+<option>All 148</option>
+</select>
+<span>Showing <strong class="text-on-surface">1 - 4</strong> of <strong class="text-on-surface">148</strong> Co-Authors</span>
+</div>
+<div class="flex items-center gap-1">
+<button class="p-1.5 rounded bg-surface-container-lowest text-on-surface-variant hover:text-on-surface disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined text-[18px]">first_page</span>
+</button>
+<button class="p-1.5 rounded bg-surface-container-lowest text-on-surface-variant hover:text-on-surface disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="px-3 py-1 rounded bg-primary text-on-primary font-label-md text-label-md">1</button>
+<button class="px-3 py-1 rounded bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-md text-label-md">2</button>
+<button class="px-3 py-1 rounded bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-md text-label-md">3</button>
+<span class="px-1 text-on-surface-variant">...</span>
+<button class="px-3 py-1 rounded bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-md text-label-md">6</button>
+<button class="p-1.5 rounded bg-surface-container-lowest text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+<button class="p-1.5 rounded bg-surface-container-lowest text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined text-[18px]">last_page</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Full 37-Column Dossier Review Modal Dialog -->
+<div class="fixed inset-0 z-50 bg-inverse-surface/60 backdrop-blur-sm hidden flex items-center justify-center p-space-md" id="dossier-modal">
+<div class="bg-surface-container-lowest w-full max-w-5xl max-h-[942px] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+<!-- Modal Header -->
+<div class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-[24px]">contact_page</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-headline-sm text-headline-sm font-bold text-on-surface" id="modal-author-name">Author Name</h3>
+<span class="px-2 py-0.5 rounded bg-surface-container font-mono text-label-sm text-label-sm font-bold text-primary" id="modal-paper-id">ieee-icoste_XXXX</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Comprehensive 37-Column IEEE Google Sheet Record Breakdown</p>
+</div>
+</div>
+<button class="w-8 h-8 rounded-full hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-on-surface" onclick="closeDossierModal()">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Modal Body (37 Data Fields Accordion / Tabbed Panels) -->
+<div class="flex-1 overflow-y-auto p-space-lg space-y-space-lg">
+<!-- Author Overview & Verification Status Quick Bar -->
+<div class="bg-surface-container-low p-space-md rounded-xl flex flex-wrap items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md">
+<div>
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant block">Affiliation Track</span>
+<span class="font-label-md text-label-md font-bold text-on-surface" id="modal-institution">Institution Name</span>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant"></div>
+<div>
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant block">Registered Email</span>
+<span class="font-label-md text-label-md font-bold text-primary" id="modal-email">email@address.edu</span>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant"></div>
+<div>
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant block">Contact Phone</span>
+<span class="font-label-md text-label-md font-bold text-on-surface font-mono" id="modal-phone">+880 1XXXXXXXXX</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-3 py-1 rounded-full bg-surface-container font-label-md text-label-md text-primary font-bold">Verified Status</span>
+</div>
+</div>
+<!-- Section 1: Authorship & Role Hierarchy (Cols 1-10) -->
+<div>
+<div class="flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-primary text-[18px]">badge</span>
+<h4 class="font-label-lg text-label-lg font-bold text-on-surface">1. Authorship, Identification &amp; IEEE Membership (Cols 01-10)</h4>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-surface-container-lowest p-3 rounded-lg">
+<div class="bg-surface-container-low p-2.5 rounded-lg">
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Col 01: Timestamp</span>
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">2026-03-29 14:22:10 BST</span>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded-lg">
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Col 02: Full Legal Name</span>
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">Mohammad Tanvir Rahman</span>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded-lg">
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Col 03: Authorship Rank</span>
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">First / Primary Author</span>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded-lg">
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Col 04: Gender / Title</span>
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">Male (Mr.)</span>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded-lg">
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Col 05: IEEE Member ID</span>
+<span class="font-body-sm text-body-sm font-semibold text-primary font-mono">98210349 (Active)</span>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded-lg">
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Col 06: Student ID No.</span>
+<span class="font-body-sm text-body-sm font-semibold text-on-surface font-mono">2021-1-60-044</span>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded-lg">
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Col 07: University Dept.</span>
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">Computer Science &amp; Eng.</span>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded-lg">
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Col 08: National ID / Passport</span>
+<span class="font-body-sm text-body-sm font-semibold text-on-surface font-mono">BD 8392019481</span>
+</div>
+</div>
+</div>
+<!-- Section 2: Uploaded Proof Assets (Cols 11-14 with High-Res Zoom) -->
+<div>
+<div class="flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-primary text-[18px]">photo_library</span>
+<h4 class="font-label-lg text-label-lg font-bold text-on-surface">2. Media Proofs &amp; Credentials (Cols 11-14)</h4>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="bg-surface-container-low p-3 rounded-xl flex flex-col items-center text-center">
+<img class="w-full h-36 object-cover rounded-lg shadow-sm mb-2" data-alt="Frontal passport photograph of candidate author with crisp lighting and plain light blue backdrop." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJuoFSyJLWjfknpthiKARlfZl5F-ORbHH3jnpBqjoSrNP_pqhqvtXnP6Gykt3Dmlc6PfzJmatF2lE1HKoOVToBjoQkF1Zu42aIez5Sj8HFNmLlIgGPXSXxA34re1AQmkaj3tQ9wU5k0X-VIYG-BorGlhaIq53QAgPXY_yWC64U91aob4HdLsoyxcGpAGMBJGJhWNbTThz1KDirbcbXXxfKIehyULmiy4fGpvqMWfr848w4gk-I2_5A">
+<span class="font-label-sm text-label-sm font-bold text-on-surface">Col 11: Passport Photo</span>
+<span class="font-body-sm text-[11px] text-primary underline cursor-pointer mt-0.5">View ImgBB Mirror</span>
+</div>
+<div class="bg-surface-container-low p-3 rounded-xl flex flex-col items-center text-center">
+<img class="w-full h-36 object-cover rounded-lg shadow-sm mb-2" data-alt="Formal university institutional identification card front showing photo, department stamp, and barcode." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtY2-gqLxAjRX_aAWhah0tHj0yTDEt8FvE8HhMuwwkZufJ6jIlDkCOD_dLpyBkb8hy7uKbbYJYrV_-3HYDwbV4FqEOrWmYQx9h-QUgecG-qNw5N1E9kyqcLOHJrgV758O7AhGNa_f203KkeUiszVpQjztYSR2gMs9NItp7ispfx1ROAkgTD-mfocJkTHRieu4ufjJychQxtAu9qoY8GPbnCONRp4xl7mRa8L9Zy969qaaHYq1o1id2">
+<span class="font-label-sm text-label-sm font-bold text-on-surface">Col 12: Student ID Card</span>
+<span class="font-body-sm text-[11px] text-primary underline cursor-pointer mt-0.5">View ImgBB Mirror</span>
+</div>
+<div class="bg-surface-container-low p-3 rounded-xl flex flex-col items-center text-center">
+<img class="w-full h-36 object-cover rounded-lg shadow-sm mb-2" data-alt="Official semester registration card paperwork issued by registrar office." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLI1-QPO4UztuBzoHUGWr1sPXm0agNixJ2RPGFECi0LI-l_m-_J_rKYYy-tEDm6ABYnfqgIdZvPSBrMoPFEPbzLhe7VuGVakrPTGT_XZtfwBF9i9UusnZq5VPKUNzBfwJsxhuBqAymL-PaKcdzPEUyOSHl9YeRSS5AgIov1h9Lk07sn0h5-js5Z8Zp7mwVZqmYjfcckBnptBq7DvgKHAorWpffbs7EUk1A6wkSNLkKliOeXbRii_NU">
+<span class="font-label-sm text-label-sm font-bold text-on-surface">Col 13: Academic Reg Card</span>
+<span class="font-body-sm text-[11px] text-primary underline cursor-pointer mt-0.5">View ImgBB Mirror</span>
+</div>
+<div class="bg-surface-container-low p-3 rounded-xl flex flex-col items-center text-center">
+<img class="w-full h-36 object-cover rounded-lg shadow-sm mb-2" data-alt="Original legal handwritten signature scanned on pure white archival paper." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxekQuLqJBSgj_SyOytIaOf0DuxCpZBQJDLWDIHa2HLR3dGzecG5fsQRRTLYbw0lgB2pq_EyTP7f-JCDqvoj7m9ayHBroBa0CtfMR7WO6GsSW-8mSoZK6A7newjyliZ9oy8XzJ6k9ZfZMrnnSOfb3iW5K2iwoPD065_BVEsRauSRLNXajKPFKiIpUrEACdL8D7aM_WHAjiMGtXIts0kvTC2_jM4dm6oXvxcKx6dWPRsELPNm45VSLc">
+<span class="font-label-sm text-label-sm font-bold text-on-surface">Col 14: Digital Signature</span>
+<span class="font-body-sm text-[11px] text-primary underline cursor-pointer mt-0.5">View ImgBB Mirror</span>
+</div>
+</div>
+</div>
+<!-- Section 3: Paper Metadata & Payment Transactions (Cols 15-37) -->
+<div>
+<div class="flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-primary text-[18px]">receipt_long</span>
+<h4 class="font-label-lg text-label-lg font-bold text-on-surface">3. Financial Ledger &amp; Paper Indexing (Cols 15-37)</h4>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 bg-surface-container-lowest p-3 rounded-lg">
+<div class="bg-surface-container-low p-2.5 rounded-lg">
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Col 15: bKash / Nagad TrxID</span>
+<span class="font-body-sm text-body-sm font-bold text-primary font-mono">9K28ALQ91P</span>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded-lg">
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Col 16: Fee Category</span>
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">BDT 6,500 (IEEE Student Author)</span>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded-lg">
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Col 17: Payment Account No.</span>
+<span class="font-body-sm text-body-sm font-semibold text-on-surface font-mono">+880 1712-493821</span>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded-lg">
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Col 18: Full Paper Title</span>
+<span class="font-body-sm text-body-sm font-semibold text-on-surface truncate">Decentralized Microgrid Fault Detection using Transformer Nets</span>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded-lg">
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Col 19: Presentation Format</span>
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">Oral In-Person (Cox's Bazar)</span>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded-lg">
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Col 20: T-Shirt Size &amp; Kit</span>
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">Size: XL (Kit Confirmed)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal Footer Controls -->
+<div class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between">
+<button class="px-4 py-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors" onclick="closeDossierModal()">
+          Close Dossier
+        </button>
+<div class="flex items-center gap-space-sm">
+<button class="px-4 py-2 rounded-lg bg-error-container text-on-error-container hover:bg-error-container/80 font-label-md text-label-md transition-colors">
+            Flag Rescan Needed
+          </button>
+<button class="px-5 py-2 rounded-lg bg-primary text-on-primary hover:bg-surface-tint font-label-md text-label-md shadow-sm transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+            Approve &amp; Issue Certificate ID
+          </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Client-side Interactive Logic -->
+<script>
+    function openDossierModal(name, paperId, institution, email, phone) {
+      document.getElementById('modal-author-name').innerText = name;
+      document.getElementById('modal-paper-id').innerText = paperId;
+      document.getElementById('modal-institution').innerText = institution;
+      document.getElementById('modal-email').innerText = email;
+      document.getElementById('modal-phone').innerText = phone;
+      document.getElementById('dossier-modal').classList.remove('hidden');
+    }
+
+    function closeDossierModal() {
+      document.getElementById('dossier-modal').classList.add('hidden');
+    }
+
+    // Sync sheet animation button
+    const syncBtn = document.getElementById('sync-sheet-btn');
+    const syncIcon = document.getElementById('sync-icon');
+    if (syncBtn && syncIcon) {
+      syncBtn.addEventListener('click', () => {
+        syncIcon.classList.add('animate-spin');
+        syncBtn.querySelector('span:last-child').innerText = 'Syncing 37 Columns...';
+        setTimeout(() => {
+          syncIcon.classList.remove('animate-spin');
+          syncBtn.querySelector('span:last-child').innerText = 'Synced Just Now';
+          setTimeout(() => {
+            syncBtn.querySelector('span:last-child').innerText = 'Sync Sheet Now';
+          }, 2500);
+        }, 1200);
+      });
+    }
+
+    // Live search filter in local table
+    const searchInput = document.getElementById('author-search-input');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        const val = e.target.value.toLowerCase();
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+          const text = row.innerText.toLowerCase();
+          row.style.display = text.includes(val) ? '' : 'none';
+        });
+      });
+    }
+  </script>
+</div></main></div></body></html>

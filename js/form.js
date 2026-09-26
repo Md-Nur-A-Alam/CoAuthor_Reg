@@ -181,8 +181,6 @@
     var errEl = document.getElementById('err-' + id);
 
     switch(id) {
-      case 'paperId':
-      case 'paperTitle':
       case 'firstName':
       case 'lastName':
       case 'fullName':
@@ -256,7 +254,7 @@
 
   // All tracked inputs
   var trackedInputs = [
-    'paperId', 'paperTitle', 'firstName', 'lastName', 'fullName', 'dob',
+    'firstName', 'lastName', 'fullName', 'dob',
     'gender', 'nationality', 'bloodGroup', 'universityName', 'departmentName',
     'programDegree', 'batch', 'studentId', 'levelTerm',
     'primaryPhone', 'altPhone', 'email', 'fbProfile', 'linkedInProfile',
@@ -466,8 +464,8 @@
 
     // Build payload matching all 39 columns
     var payload = {
-      paperId: document.getElementById('paperId').value.trim(),
-      paperTitle: document.getElementById('paperTitle').value.trim(),
+      paperId: '',
+      paperTitle: '',
       firstName: document.getElementById('firstName').value.trim(),
       lastName: document.getElementById('lastName').value.trim(),
       fullName: document.getElementById('fullName').value.trim(),
@@ -513,7 +511,8 @@
 
       if (res && res.success) {
         document.getElementById('receipt-sl').textContent = res.sl || 'Recorded';
-        document.getElementById('receipt-paper-id').textContent = res.paperId || '-';
+        var paperEl = document.getElementById('receipt-paper-id');
+        if (paperEl) paperEl.textContent = res.paperId || '-';
         document.getElementById('receipt-name').textContent = res.fullName || '-';
         document.getElementById('receipt-timestamp').textContent = res.timestamp || new Date().toLocaleString();
 
@@ -533,14 +532,9 @@
     }
   });
 
-  // 8. Register Another Co-Author (Same Paper)
+  // 8. Register Another Co-Author
   btnSubmitAnother.addEventListener('click', function() {
-    var savedPaperId = document.getElementById('paperId').value;
-    var savedPaperTitle = document.getElementById('paperTitle').value;
-
     form.reset();
-    document.getElementById('paperId').value = savedPaperId;
-    document.getElementById('paperTitle').value = savedPaperTitle;
     document.getElementById('nationality').value = 'Bangladeshi';
 
     imageKeys.forEach(function(k) {
@@ -566,32 +560,11 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
-  // 9. Submit New Paper Registration
-  btnNewForm.addEventListener('click', function() {
-    form.reset();
-    document.getElementById('nationality').value = 'Bangladeshi';
-    imageKeys.forEach(function(k) {
-      uploadedImages[k] = null;
-      resetUploadCard(k);
+  if (btnNewForm) {
+    btnNewForm.addEventListener('click', function() {
+      btnSubmitAnother.click();
     });
-
-    fullNameManuallyEdited = false;
-    presentDistrictSelect.disabled = true;
-    presentDistrictSelect.innerHTML = '<option value="" disabled selected>Select Division First</option>';
-    permanentDistrictSelect.disabled = true;
-    permanentDistrictSelect.innerHTML = '<option value="" disabled selected>Select Division First</option>';
-
-    var validatedEls = document.querySelectorAll('.is-valid, .is-invalid');
-    validatedEls.forEach(function(el) {
-      el.classList.remove('is-valid');
-      el.classList.remove('is-invalid');
-    });
-
-    successScreen.style.display = 'none';
-    form.style.display = 'block';
-    checkFormValidity();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
+  }
 
   // Toast Notification Helper
   function showToast(message, type) {
