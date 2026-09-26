@@ -436,9 +436,7 @@ function validateFormData_(data) {
   req(data.studentId, 'Student ID');
   req(data.levelTerm, 'Level-Term');
   req(data.primaryPhone, 'Primary Phone Number');
-  req(data.altPhone, 'Alternative Phone Number');
   req(data.email, 'Email Address');
-  req(data.fbProfile, 'Facebook Profile Link');
   req(data.linkedInProfile, 'LinkedIn Profile Link');
   req(data.presentAddress, 'Present Address');
   req(data.presentDivision, 'Present Division');
@@ -453,7 +451,7 @@ function validateFormData_(data) {
   if (data.primaryPhone && !phoneRegex.test(String(data.primaryPhone).trim())) {
     errors.push('Primary Phone Number must be a valid Bangladeshi mobile number (e.g. 017xxxxxxxx or +88017xxxxxxxx).');
   }
-  if (data.altPhone && !phoneRegex.test(String(data.altPhone).trim())) {
+  if (data.altPhone && String(data.altPhone).trim() !== '' && !phoneRegex.test(String(data.altPhone).trim())) {
     errors.push('Alternative Phone Number must be a valid Bangladeshi mobile number.');
   }
 

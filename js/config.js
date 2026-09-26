@@ -11,5 +11,11 @@ window.CONFIG = {
   THEME: 'Sustainable Technology for Humanity & Global Impact',
   DATES: '1–3 November 2026',
   VENUE: "Best Western Heritage, Cox's Bazar, Bangladesh",
-  HOST: 'Bangladesh University of Business and Technology (BUBT)'
+  HOST: 'Bangladesh University of Business and Technology (BUBT)',
+
+  // Accepted Paper Metadata & Visual Assets
+  PAPER_TITLE: 'MediNet_XG: An Explainable Deep Learning Framework for Medicinal Plant Leaf Identification using Grad-CAM',
+  PAPER_TRACK: 'Intelligent Systems, Biomedical Engineering & Sustainable AI',
+  PAPER_FIGURE_1: 'assets/result_graph.png',
+  PAPER_FIGURE_2: 'assets/result.png'
 };

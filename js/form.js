@@ -1,586 +1,500 @@
 /**
  * IEEE i-COSTE 2026 Public Registration Form Logic
+ * Responsive handling, cascading BD geography, live file previews,
+ * dual-cloud upload sequencing, and confirmation dossier rendering.
  */
-(function() {
-  // 1. Bangladesh Divisions & 64 Districts Data Mapping
-  var BD_DIVISIONS = {
-    "Barishal": ["Barguna", "Barishal", "Bhola", "Jhalokati", "Patuakhali", "Pirojpur"],
-    "Chattogram": ["Bandarban", "Brahmanbaria", "Chandpur", "Chattogram", "Cox's Bazar", "Cumilla", "Feni", "Khagrachhari", "Lakshmipur", "Noakhali", "Rangamati"],
-    "Dhaka": ["Dhaka", "Faridpur", "Gazipur", "Gopalganj", "Kishoreganj", "Madaripur", "Manikganj", "Munshiganj", "Narayanganj", "Narsingdi", "Rajbari", "Shariatpur", "Tangail"],
-    "Khulna": ["Bagerhat", "Chuadanga", "Jashore", "Jhenaidah", "Khulna", "Kushtia", "Magura", "Meherpur", "Narail", "Satkhira"],
-    "Mymensingh": ["Jamalpur", "Mymensingh", "Netrokona", "Sherpur"],
-    "Rajshahi": ["Bogura", "Chapainawabganj", "Joypurhat", "Naogaon", "Natore", "Pabna", "Rajshahi", "Sirajganj"],
-    "Rangpur": ["Dinajpur", "Gaibandha", "Kurigram", "Lalmonirhat", "Nilphamari", "Panchagarh", "Rangpur", "Thakurgaon"],
-    "Sylhet": ["Habiganj", "Moulvibazar", "Sunamganj", "Sylhet"]
-  };
 
-  // State of uploaded images: { imgbbUrl, postimageUrl, preferredUrl }
-  var uploadedImages = {
-    ppPhoto: null,
-    studentIdCard: null,
-    regCard: null,
-    signature: null
-  };
+// Bangladesh Divisions & 64 Districts Mapping
+const BD_DIVISIONS = {
+  "Barishal": ["Barguna", "Barishal", "Bhola", "Jhalokati", "Patuakhali", "Pirojpur"],
+  "Chattogram": ["Bandarban", "Brahmanbaria", "Chandpur", "Chattogram", "Cox's Bazar", "Cumilla", "Feni", "Khagrachhari", "Lakshmipur", "Noakhali", "Rangamati"],
+  "Dhaka": ["Dhaka", "Faridpur", "Gazipur", "Gopalganj", "Kishoreganj", "Madaripur", "Manikganj", "Munshiganj", "Narayanganj", "Narsingdi", "Rajbari", "Shariatpur", "Tangail"],
+  "Khulna": ["Bagerhat", "Chuadanga", "Jashore", "Jhenaidah", "Khulna", "Kushtia", "Magura", "Meherpur", "Narail", "Satkhira"],
+  "Mymensingh": ["Jamalpur", "Mymensingh", "Netrokona", "Sherpur"],
+  "Rajshahi": ["Bogura", "Chapainawabganj", "Joypurhat", "Naogaon", "Natore", "Pabna", "Rajshahi", "Sirajganj"],
+  "Rangpur": ["Dinajpur", "Gaibandha", "Kurigram", "Lalmonirhat", "Nilphamari", "Panchagarh", "Rangpur", "Thakurgaon"],
+  "Sylhet": ["Habiganj", "Moulvibazar", "Sunamganj", "Sylhet"]
+};
 
-  var fullNameManuallyEdited = false;
+// Image Files State (storing base64 DataURL and file meta for client upload)
+const selectedFiles = {
+  ppPhoto: null,
+  studentIdCard: null,
+  regCard: null,
+  signature: null
+};
 
-  // DOM Elements
-  var form = document.getElementById('coauthor-form');
-  var btnSubmit = document.getElementById('btn-submit');
-  var btnSubmitText = document.getElementById('btn-submit-text');
-  var btnSubmitSpinner = document.getElementById('btn-submit-spinner');
-  var submitNoticeBanner = document.getElementById('submit-notice-banner');
+// Server Cloud Upload Results
+const uploadedMedia = {
+  ppPhoto: null,
+  studentIdCard: null,
+  regCard: null,
+  signature: null
+};
 
-  var firstNameInput = document.getElementById('firstName');
-  var lastNameInput = document.getElementById('lastName');
-  var fullNameInput = document.getElementById('fullName');
-  var dobInput = document.getElementById('dob');
+let fullNameManuallyEdited = false;
 
-  // Address elements
-  var presentAddressInput = document.getElementById('presentAddress');
-  var presentDivisionSelect = document.getElementById('presentDivision');
-  var presentDistrictSelect = document.getElementById('presentDistrict');
+document.addEventListener('DOMContentLoaded', () => {
+  initPaperShowcase();
+  initDateConstraints();
+  initCascadingDropdowns();
+  initNameSync();
+  initAddressCopy();
+  initFormSubmission();
+  initNavTabs();
+});
 
-  var sameAsPresentCheck = document.getElementById('sameAsPresent');
-  var permanentAddressInput = document.getElementById('permanentAddress');
-  var permanentDivisionSelect = document.getElementById('permanentDivision');
-  var permanentDistrictSelect = document.getElementById('permanentDistrict');
+/**
+ * Sync showcase paper title with CONFIG
+ */
+function initPaperShowcase() {
+  const paperTitleEl = document.getElementById('showcase-paper-title');
+  const receiptTitleEl = document.getElementById('receipt-paper-title');
+  const title = (window.CONFIG && window.CONFIG.PAPER_TITLE) || 'MediNet_XG: An Explainable Deep Learning Framework for Medicinal Plant Leaf Identification using Grad-CAM';
+  if (paperTitleEl) paperTitleEl.textContent = `"${title}"`;
+  if (receiptTitleEl) receiptTitleEl.textContent = `"${title}"`;
+}
 
-  var declarationCheckbox = document.getElementById('declaration');
-
-  var successScreen = document.getElementById('success-screen');
-  var btnSubmitAnother = document.getElementById('btn-submit-another');
-  var btnNewForm = document.getElementById('btn-new-form');
-
-  window.addEventListener('DOMContentLoaded', function() {
-    var today = new Date().toISOString().split('T')[0];
+/**
+ * Set max date of birth to today
+ */
+function initDateConstraints() {
+  const dobInput = document.getElementById('dob');
+  if (dobInput) {
+    const today = new Date().toISOString().split('T')[0];
     dobInput.setAttribute('max', today);
-  });
+  }
+}
 
-  // 2. Cascading Divisions & Districts Setup Helper
-  function setupCascadingDropdown(divSelect, distSelect) {
-    divSelect.addEventListener('change', function() {
-      var selDiv = this.value;
-      distSelect.innerHTML = '<option value="" disabled selected>Select District</option>';
-      if (BD_DIVISIONS[selDiv]) {
-        BD_DIVISIONS[selDiv].forEach(function(district) {
-          var opt = document.createElement('option');
-          opt.value = district;
-          opt.textContent = district;
-          distSelect.appendChild(opt);
-        });
-        distSelect.disabled = false;
-      } else {
-        distSelect.disabled = true;
-      }
-      validateField(divSelect);
-      validateField(distSelect);
+/**
+ * Setup cascading divisions & districts
+ */
+function initCascadingDropdowns() {
+  const presentDiv = document.getElementById('presentDivision');
+  const presentDist = document.getElementById('presentDistrict');
+  const permDiv = document.getElementById('permanentDivision');
+  const permDist = document.getElementById('permanentDistrict');
 
-      if (sameAsPresentCheck && sameAsPresentCheck.checked && divSelect === presentDivisionSelect) {
-        syncPermanentAddress();
-      }
-      checkFormValidity();
-    });
-
-    distSelect.addEventListener('change', function() {
-      validateField(this);
-      if (sameAsPresentCheck && sameAsPresentCheck.checked && distSelect === presentDistrictSelect) {
-        syncPermanentAddress();
-      }
-      checkFormValidity();
+  function bindCascading(divEl, distEl) {
+    if (!divEl || !distEl) return;
+    divEl.addEventListener('change', function() {
+      populateDistricts(this.value, distEl);
     });
   }
 
-  setupCascadingDropdown(presentDivisionSelect, presentDistrictSelect);
-  setupCascadingDropdown(permanentDivisionSelect, permanentDistrictSelect);
+  bindCascading(presentDiv, presentDist);
+  bindCascading(permDiv, permDist);
+}
 
-  // Sync Present Address to Permanent Address when checkbox is ticked
-  function syncPermanentAddress() {
-    permanentAddressInput.value = presentAddressInput.value;
-    var selDiv = presentDivisionSelect.value;
-    permanentDivisionSelect.value = selDiv;
+function populateDistricts(divName, distEl, selectedDistrict = '') {
+  distEl.innerHTML = '<option value="" disabled selected>Select District</option>';
+  if (BD_DIVISIONS[divName]) {
+    BD_DIVISIONS[divName].forEach(dist => {
+      const opt = document.createElement('option');
+      opt.value = dist;
+      opt.textContent = dist;
+      if (dist === selectedDistrict) opt.selected = true;
+      distEl.appendChild(opt);
+    });
+    distEl.disabled = false;
+  } else {
+    distEl.disabled = true;
+  }
+}
 
-    permanentDistrictSelect.innerHTML = '<option value="" disabled selected>Select District</option>';
-    if (BD_DIVISIONS[selDiv]) {
-      BD_DIVISIONS[selDiv].forEach(function(district) {
-        var opt = document.createElement('option');
-        opt.value = district;
-        opt.textContent = district;
-        permanentDistrictSelect.appendChild(opt);
-      });
-      permanentDistrictSelect.disabled = false;
-      permanentDistrictSelect.value = presentDistrictSelect.value;
-    } else {
-      permanentDistrictSelect.disabled = true;
+/**
+ * Auto-generate Certificate Full Name from First + Last Name
+ */
+function initNameSync() {
+  const firstEl = document.getElementById('firstName');
+  const lastEl = document.getElementById('lastName');
+  const fullEl = document.getElementById('fullName');
+
+  function update() {
+    if (!fullNameManuallyEdited && fullEl) {
+      const fn = (firstEl ? firstEl.value.trim() : '');
+      const ln = (lastEl ? lastEl.value.trim() : '');
+      fullEl.value = `${fn} ${ln}`.trim();
     }
-
-    validateField(permanentAddressInput);
-    validateField(permanentDivisionSelect);
-    validateField(permanentDistrictSelect);
   }
 
-  if (sameAsPresentCheck) {
-    sameAsPresentCheck.addEventListener('change', function() {
-      if (this.checked) {
-        syncPermanentAddress();
-      }
-      checkFormValidity();
-    });
-
-    presentAddressInput.addEventListener('input', function() {
-      if (sameAsPresentCheck.checked) {
-        permanentAddressInput.value = this.value;
-        validateField(permanentAddressInput);
-      }
-      validateField(this);
-      checkFormValidity();
+  if (firstEl) firstEl.addEventListener('input', update);
+  if (lastEl) lastEl.addEventListener('input', update);
+  if (fullEl) {
+    fullEl.addEventListener('input', () => {
+      fullNameManuallyEdited = fullEl.value.trim().length > 0;
     });
   }
+}
 
-  // 3. Auto-suggest Full Name
-  function updateFullNameSuggestion() {
-    if (!fullNameManuallyEdited) {
-      var first = firstNameInput.value.trim();
-      var last = lastNameInput.value.trim();
-      var full = (first + ' ' + last).trim();
-      fullNameInput.value = full;
-      if (full) {
-        validateField(fullNameInput);
-      }
-    }
-  }
+/**
+ * "Same as Present" Address Copy
+ */
+function initAddressCopy() {
+  const btnCopy = document.getElementById('btn-copy-address');
+  if (!btnCopy) return;
 
-  firstNameInput.addEventListener('input', function() {
-    updateFullNameSuggestion();
-    validateField(this);
-    checkFormValidity();
-  });
+  btnCopy.addEventListener('click', () => {
+    const presentAddr = document.getElementById('presentAddress').value.trim();
+    const presentDiv = document.getElementById('presentDivision').value;
+    const presentDist = document.getElementById('presentDistrict').value;
 
-  lastNameInput.addEventListener('input', function() {
-    updateFullNameSuggestion();
-    validateField(this);
-    checkFormValidity();
-  });
+    const permAddr = document.getElementById('permanentAddress');
+    const permDiv = document.getElementById('permanentDivision');
+    const permDist = document.getElementById('permanentDistrict');
 
-  fullNameInput.addEventListener('input', function() {
-    fullNameManuallyEdited = true;
-    validateField(this);
-    checkFormValidity();
-  });
-
-  // 4. Validation Rules & Realtime Feedback
-  var phoneRegex = /^(\+?880|0)1[3-9]\d{8}$/;
-  var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  var nidRegex = /^(\d{10}|\d{13}|\d{17})$/;
-
-  function validateField(el) {
-    if (!el) return true;
-    var id = el.id;
-    var val = el.value ? el.value.trim() : '';
-    var isValid = true;
-    var errEl = document.getElementById('err-' + id);
-
-    switch(id) {
-      case 'firstName':
-      case 'lastName':
-      case 'fullName':
-      case 'gender':
-      case 'nationality':
-      case 'bloodGroup':
-      case 'universityName':
-      case 'departmentName':
-      case 'programDegree':
-      case 'batch':
-      case 'studentId':
-      case 'levelTerm':
-      case 'presentAddress':
-      case 'presentDivision':
-      case 'presentDistrict':
-      case 'permanentAddress':
-      case 'permanentDivision':
-      case 'permanentDistrict':
-        isValid = val.length > 0;
-        break;
-
-      case 'primaryPhone':
-      case 'altPhone':
-        isValid = phoneRegex.test(val);
-        break;
-
-      case 'email':
-        isValid = emailRegex.test(val);
-        break;
-
-      case 'nidNumber':
-        isValid = nidRegex.test(val);
-        break;
-
-      case 'fbProfile':
-        isValid = /^https?:\/\//i.test(val) && val.toLowerCase().indexOf('facebook.com') > -1;
-        break;
-
-      case 'linkedInProfile':
-        isValid = /^https?:\/\//i.test(val) && val.toLowerCase().indexOf('linkedin.com') > -1;
-        break;
-
-      case 'dob':
-        if (!val) {
-          isValid = false;
-        } else {
-          var dobDate = new Date(val);
-          var now = new Date();
-          var age = (now - dobDate) / (365.25 * 24 * 60 * 60 * 1000);
-          isValid = !isNaN(dobDate.getTime()) && dobDate < now && age >= 15 && age <= 100;
-        }
-        break;
-
-      case 'declaration':
-        isValid = el.checked;
-        break;
-    }
-
-    if (isValid) {
-      el.classList.remove('is-invalid');
-      el.classList.add('is-valid');
-      if (errEl) errEl.classList.remove('show');
-    } else {
-      el.classList.remove('is-valid');
-      el.classList.add('is-invalid');
-      if (errEl) errEl.classList.add('show');
-    }
-
-    return isValid;
-  }
-
-  // All tracked inputs
-  var trackedInputs = [
-    'firstName', 'lastName', 'fullName', 'dob',
-    'gender', 'nationality', 'bloodGroup', 'universityName', 'departmentName',
-    'programDegree', 'batch', 'studentId', 'levelTerm',
-    'primaryPhone', 'altPhone', 'email', 'fbProfile', 'linkedInProfile',
-    'presentAddress', 'presentDivision', 'presentDistrict',
-    'permanentAddress', 'permanentDivision', 'permanentDistrict',
-    'nidNumber', 'declaration'
-  ];
-
-  trackedInputs.forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) {
-      el.addEventListener('input', function() {
-        validateField(this);
-        checkFormValidity();
-      });
-      el.addEventListener('blur', function() {
-        validateField(this);
-        checkFormValidity();
-      });
-      el.addEventListener('change', function() {
-        validateField(this);
-        checkFormValidity();
-      });
-    }
-  });
-
-  // 5. Image Upload Handling (4 slots)
-  var imageKeys = ['ppPhoto', 'studentIdCard', 'regCard', 'signature'];
-
-  imageKeys.forEach(function(key) {
-    var fileInput = document.getElementById('file-' + key);
-    var changeInput = document.getElementById('change-' + key);
-
-    if (fileInput) {
-      fileInput.addEventListener('change', function() {
-        handleImageSelection(this.files[0], key);
-      });
-    }
-
-    if (changeInput) {
-      changeInput.addEventListener('change', function() {
-        handleImageSelection(this.files[0], key);
-      });
-    }
-  });
-
-  async function handleImageSelection(file, key) {
-    if (!file) return;
-
-    var validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-    if (validTypes.indexOf(file.type) === -1) {
-      showToast('Only JPG, JPEG, and PNG images are allowed.', 'error');
+    if (!presentDiv || !presentAddr) {
+      alert('Please fill in your Present Division and Present Address first.');
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      showToast('Image file size must be less than 5 MB.', 'error');
-      return;
+    permAddr.value = presentAddr;
+    permDiv.value = presentDiv;
+    populateDistricts(presentDiv, permDist, presentDist);
+  });
+}
+
+/**
+ * Handle File Selection with Real-time Thumbnail Preview
+ */
+window.handleFileSelected = function(inputEl, key) {
+  const file = inputEl.files && inputEl.files[0];
+  if (!file) return;
+
+  // Max 5MB check
+  if (file.size > 5 * 1024 * 1024) {
+    alert(`File is too large (${(file.size / (1024 * 1024)).toFixed(2)} MB). Please select an image under 5MB.`);
+    inputEl.value = '';
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const dataUrl = e.target.result;
+    selectedFiles[key] = {
+      file: file,
+      base64: dataUrl,
+      fileName: file.name,
+      mimeType: file.type || 'image/jpeg'
+    };
+
+    // Update UI Preview
+    const previewBox = document.getElementById(`preview-box-${key}`);
+    const thumbImg = document.getElementById(`thumb-${key}`);
+    const labelEl = document.getElementById(`label-${key}`);
+
+    if (previewBox && thumbImg) {
+      thumbImg.src = dataUrl;
+      previewBox.classList.remove('hidden');
     }
+    if (labelEl) {
+      labelEl.textContent = 'Change File';
+    }
+  };
+  reader.readAsDataURL(file);
+};
 
-    var card = document.getElementById('dropzone-' + key);
-    var idleState = document.getElementById('idle-' + key);
-    var spinnerState = document.getElementById('spinner-' + key);
-    var previewState = document.getElementById('preview-' + key);
-    var thumbImg = document.getElementById('thumb-' + key);
-    var errEl = document.getElementById('err-' + key);
+/**
+ * Remove an uploaded image
+ */
+window.removeImage = function(key) {
+  selectedFiles[key] = null;
+  uploadedMedia[key] = null;
 
-    card.classList.remove('has-file');
-    card.classList.add('is-uploading');
-    idleState.style.display = 'none';
-    previewState.style.display = 'none';
-    spinnerState.style.display = 'flex';
-    if (errEl) errEl.classList.remove('show');
+  const fileInput = document.getElementById(`file-${key}`);
+  if (fileInput) fileInput.value = '';
 
-    var reader = new FileReader();
-    reader.onload = async function(e) {
-      var base64Data = e.target.result;
+  const previewBox = document.getElementById(`preview-box-${key}`);
+  const thumbImg = document.getElementById(`thumb-${key}`);
+  const labelEl = document.getElementById(`label-${key}`);
 
-      try {
-        var response = await Api.uploadImage(base64Data, file.name, file.type, key);
+  if (previewBox) previewBox.classList.add('hidden');
+  if (thumbImg) thumbImg.src = '';
+  if (labelEl) labelEl.textContent = 'Select File';
+};
 
-        if (response && response.success) {
-          uploadedImages[key] = {
-            imgbbUrl: response.imgbbUrl,
-            postimageUrl: response.postimageUrl,
-            preferredUrl: response.preferredUrl
-          };
+/**
+ * Navigation tabs (Form vs Confirmation view)
+ */
+function initNavTabs() {
+  const tabForm = document.getElementById('nav-tab-form');
+  const tabConf = document.getElementById('nav-tab-confirmation');
+  const formView = document.getElementById('registration-view');
+  const confView = document.getElementById('confirmation-view');
+  const btnSubmitAnother = document.getElementById('btn-submit-another');
 
-          card.classList.remove('is-uploading');
-          card.classList.add('has-file');
-          spinnerState.style.display = 'none';
-          idleState.style.display = 'none';
-          previewState.style.display = 'flex';
-
-          thumbImg.src = response.preferredUrl || base64Data;
-          if (errEl) errEl.classList.remove('show');
-
-          showToast('Image uploaded successfully!', 'success');
-        } else {
-          throw new Error((response && response.error) ? response.error : 'Upload failed.');
-        }
-      } catch (err) {
-        uploadedImages[key] = null;
-        resetUploadCard(key);
-        showToast(err.message || 'Image upload error.', 'error');
-      }
-
-      checkFormValidity();
-    };
-
-    reader.onerror = function() {
-      showToast('Failed to read image file.', 'error');
-      resetUploadCard(key);
-    };
-
-    reader.readAsDataURL(file);
+  function showForm() {
+    formView.classList.remove('hidden');
+    confView.classList.add('hidden');
+    if (tabForm) {
+      tabForm.className = "px-3.5 py-2 rounded-lg text-sm font-semibold transition-all bg-primary-container text-on-primary shadow-xs";
+    }
+    if (tabConf) {
+      tabConf.className = "px-3.5 py-2 rounded-lg text-sm font-medium text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all";
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function resetUploadCard(key) {
-    var card = document.getElementById('dropzone-' + key);
-    var idleState = document.getElementById('idle-' + key);
-    var spinnerState = document.getElementById('spinner-' + key);
-    var previewState = document.getElementById('preview-' + key);
-
-    card.classList.remove('is-uploading');
-    card.classList.remove('has-file');
-    spinnerState.style.display = 'none';
-    previewState.style.display = 'none';
-    idleState.style.display = 'block';
+  function showConf() {
+    formView.classList.add('hidden');
+    confView.classList.remove('hidden');
+    if (tabConf) {
+      tabConf.className = "px-3.5 py-2 rounded-lg text-sm font-semibold transition-all bg-primary-container text-on-primary shadow-xs";
+    }
+    if (tabForm) {
+      tabForm.className = "px-3.5 py-2 rounded-lg text-sm font-medium text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all";
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // 6. Check Overall Form Validity
-  function checkFormValidity() {
-    var allInputsValid = true;
-
-    trackedInputs.forEach(function(id) {
-      var el = document.getElementById(id);
-      if (el) {
-        var val = el.value ? el.value.trim() : '';
-        if (id === 'declaration') {
-          if (!el.checked) allInputsValid = false;
-        } else if (!val) {
-          allInputsValid = false;
-        } else {
-          if ((id === 'primaryPhone' || id === 'altPhone') && !phoneRegex.test(val)) allInputsValid = false;
-          if (id === 'email' && !emailRegex.test(val)) allInputsValid = false;
-          if (id === 'nidNumber' && !nidRegex.test(val)) allInputsValid = false;
-        }
-      }
+  if (tabForm) tabForm.addEventListener('click', showForm);
+  if (tabConf) tabConf.addEventListener('click', showConf);
+  if (btnSubmitAnother) {
+    btnSubmitAnother.addEventListener('click', () => {
+      document.getElementById('coauthor-reg-form').reset();
+      Object.keys(selectedFiles).forEach(k => removeImage(k));
+      fullNameManuallyEdited = false;
+      showForm();
     });
+  }
+}
 
-    var allImagesUploaded = true;
-    imageKeys.forEach(function(k) {
-      if (!uploadedImages[k] || (!uploadedImages[k].imgbbUrl && !uploadedImages[k].postimageUrl)) {
-        allImagesUploaded = false;
-      }
-    });
+/**
+ * Primary Form Submission Pipeline
+ */
+function initFormSubmission() {
+  const form = document.getElementById('coauthor-reg-form');
+  const btnSubmit = document.getElementById('btn-submit');
+  const btnText = document.getElementById('btn-submit-text');
+  const btnIcon = document.getElementById('btn-submit-icon');
+  const btnSpinner = document.getElementById('btn-submit-spinner');
+  const statusBanner = document.getElementById('submit-status-banner');
 
-    if (allInputsValid && allImagesUploaded) {
-      btnSubmit.disabled = false;
-      submitNoticeBanner.innerHTML = '<span style="color: #059669; font-weight: 600;">&#10003; All fields verified and 4 documents uploaded. You can now submit!</span>';
+  function showStatus(msg, isError = false) {
+    if (!statusBanner) return;
+    statusBanner.classList.remove('hidden', 'bg-error-container', 'text-on-error-container', 'bg-surface-container-high', 'text-primary');
+    if (isError) {
+      statusBanner.classList.add('bg-error-container', 'text-on-error-container');
     } else {
-      btnSubmit.disabled = true;
-      if (!allImagesUploaded) {
-        submitNoticeBanner.innerHTML = 'Please upload all 4 required documents (photos/scans) to enable submission.';
-      } else {
-        submitNoticeBanner.innerHTML = 'Please fill in all mandatory fields with valid information to enable submission.';
-      }
+      statusBanner.classList.add('bg-surface-container-high', 'text-primary');
     }
-
-    return allInputsValid && allImagesUploaded;
+    statusBanner.innerHTML = msg;
   }
 
-  // 7. Form Submission Handler
   form.addEventListener('submit', async function(e) {
     e.preventDefault();
 
-    var firstInvalidEl = null;
-    trackedInputs.forEach(function(id) {
-      var el = document.getElementById(id);
-      if (el && !validateField(el)) {
-        if (!firstInvalidEl) firstInvalidEl = el;
+    // 1. Check all required text fields
+    const requiredInputs = form.querySelectorAll('[required]');
+    let firstInvalid = null;
+    requiredInputs.forEach(input => {
+      if (!input.checkValidity() || !input.value.trim()) {
+        input.classList.add('ring-2', 'ring-error');
+        if (!firstInvalid) firstInvalid = input;
+      } else {
+        input.classList.remove('ring-2', 'ring-error');
       }
     });
 
-    var missingImg = false;
-    imageKeys.forEach(function(k) {
-      if (!uploadedImages[k] || (!uploadedImages[k].imgbbUrl && !uploadedImages[k].postimageUrl)) {
-        var errEl = document.getElementById('err-' + k);
-        if (errEl) errEl.classList.add('show');
-        missingImg = true;
-      }
-    });
-
-    if (firstInvalidEl) {
-      firstInvalidEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      firstInvalidEl.focus();
-      showToast('Please correct the highlighted fields before submitting.', 'error');
+    if (firstInvalid) {
+      firstInvalid.focus();
+      showStatus('Please complete all required fields highlighted in red.', true);
       return;
     }
 
-    if (missingImg) {
-      document.getElementById('dropzone-ppPhoto').scrollIntoView({ behavior: 'smooth', block: 'center' });
-      showToast('Please upload all 4 required images before submitting.', 'error');
+    // 2. Validate Bangladeshi phone numbers
+    const primaryPhone = document.getElementById('primaryPhone').value.trim();
+    const phoneRegex = /^(\+?880|0)1[3-9]\d{8}$/;
+    if (!phoneRegex.test(primaryPhone)) {
+      document.getElementById('primaryPhone').focus();
+      showStatus('Primary Phone must be a valid Bangladeshi number (e.g. 017xxxxxxxx or +88017xxxxxxxx).', true);
       return;
     }
 
-    // Build payload matching all 39 columns
-    var payload = {
-      paperId: '',
-      paperTitle: '',
-      firstName: document.getElementById('firstName').value.trim(),
-      lastName: document.getElementById('lastName').value.trim(),
-      fullName: document.getElementById('fullName').value.trim(),
-      dob: document.getElementById('dob').value.trim(),
-      gender: document.getElementById('gender').value,
-      nationality: document.getElementById('nationality').value.trim(),
-      bloodGroup: document.getElementById('bloodGroup').value,
-      nidNumber: document.getElementById('nidNumber').value.trim(),
-      universityName: document.getElementById('universityName').value.trim(),
-      departmentName: document.getElementById('departmentName').value.trim(),
-      programDegree: document.getElementById('programDegree').value.trim(),
-      batch: document.getElementById('batch').value.trim(),
-      studentId: document.getElementById('studentId').value.trim(),
-      levelTerm: document.getElementById('levelTerm').value.trim(),
-      primaryPhone: document.getElementById('primaryPhone').value.trim(),
-      altPhone: document.getElementById('altPhone').value.trim(),
-      email: document.getElementById('email').value.trim(),
-      fbProfile: document.getElementById('fbProfile').value.trim(),
-      linkedInProfile: document.getElementById('linkedInProfile').value.trim(),
-      presentAddress: document.getElementById('presentAddress').value.trim(),
-      presentDivision: document.getElementById('presentDivision').value,
-      presentDistrict: document.getElementById('presentDistrict').value,
-      permanentAddress: document.getElementById('permanentAddress').value.trim(),
-      permanentDivision: document.getElementById('permanentDivision').value,
-      permanentDistrict: document.getElementById('permanentDistrict').value,
-      declaration: document.getElementById('declaration').checked,
-      ppPhoto: uploadedImages.ppPhoto,
-      studentIdCard: uploadedImages.studentIdCard,
-      regCard: uploadedImages.regCard,
-      signature: uploadedImages.signature
-    };
+    // 3. Validate Email
+    const email = document.getElementById('email').value.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      document.getElementById('email').focus();
+      showStatus('Please enter a valid email address.', true);
+      return;
+    }
 
+    // 4. Validate NID
+    const nidNumber = document.getElementById('nidNumber').value.trim();
+    const nidRegex = /^(\d{10}|\d{13}|\d{17})$/;
+    if (!nidRegex.test(nidNumber)) {
+      document.getElementById('nidNumber').focus();
+      showStatus('National ID must be 10, 13, or 17 digits.', true);
+      return;
+    }
+
+    // 5. Check all 4 files are selected
+    const missingDocs = [];
+    if (!selectedFiles.ppPhoto) missingDocs.push('Passport Photo');
+    if (!selectedFiles.studentIdCard) missingDocs.push('Student ID Card');
+    if (!selectedFiles.regCard) missingDocs.push('SSC/HSC Registration Card');
+    if (!selectedFiles.signature) missingDocs.push("Applicant's Signature");
+
+    if (missingDocs.length > 0) {
+      showStatus(`Please select all 4 required document files: ${missingDocs.join(', ')}.`, true);
+      return;
+    }
+
+    // 6. Check declaration checkbox
+    const declaration = document.getElementById('declaration').checked;
+    if (!declaration) {
+      showStatus('You must check and agree to the declaration statement.', true);
+      return;
+    }
+
+    // Begin Submission Process
     btnSubmit.disabled = true;
-    btnSubmitText.textContent = 'Submitting Registration Data...';
-    btnSubmitSpinner.style.display = 'block';
+    btnSpinner.classList.remove('hidden');
+    btnIcon.classList.add('hidden');
 
     try {
-      var res = await Api.submitForm(payload);
+      // Step A: Dual-Cloud Upload of 4 Documents
+      const fileUploadTasks = [
+        { key: 'ppPhoto', label: 'Passport Photo' },
+        { key: 'studentIdCard', label: 'Student ID Card' },
+        { key: 'regCard', label: 'Registration Card' },
+        { key: 'signature', label: "Applicant's Signature" }
+      ];
 
-      btnSubmit.disabled = false;
-      btnSubmitText.textContent = 'Submit Co-Author Registration';
-      btnSubmitSpinner.style.display = 'none';
+      for (let i = 0; i < fileUploadTasks.length; i++) {
+        const item = fileUploadTasks[i];
+        btnText.textContent = `Uploading ${item.label} (${i + 1}/4)...`;
+        showStatus(`Archiving ${item.label} to dual-cloud storage (ImgBB & PostImage)...`);
 
-      if (res && res.success) {
-        document.getElementById('receipt-sl').textContent = res.sl || 'Recorded';
-        var paperEl = document.getElementById('receipt-paper-id');
-        if (paperEl) paperEl.textContent = res.paperId || '-';
-        document.getElementById('receipt-name').textContent = res.fullName || '-';
-        document.getElementById('receipt-timestamp').textContent = res.timestamp || new Date().toLocaleString();
-
-        form.style.display = 'none';
-        successScreen.style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        showToast('Registration submitted successfully!', 'success');
-      } else {
-        var msg = (res && res.error) ? res.error : 'Submission failed. Please check your inputs.';
-        showToast(msg, 'error');
+        const f = selectedFiles[item.key];
+        const res = await Api.uploadImage(f.base64, f.fileName, f.mimeType, item.key);
+        if (!res || !res.success) {
+          throw new Error(res ? res.error : `Failed to upload ${item.label}`);
+        }
+        uploadedMedia[item.key] = res;
       }
+
+      // Step B: Submit Form Data to Google Sheets API
+      btnText.textContent = 'Saving to Conference Database...';
+      showStatus('Registering co-author record into Google Sheets...');
+
+      const paperTitle = (window.CONFIG && window.CONFIG.PAPER_TITLE) || 'MediNet_XG: An Explainable Deep Learning Framework for Medicinal Plant Leaf Identification using Grad-CAM';
+
+      const payload = {
+        paperId: '', // intentionally empty as requested
+        paperTitle: paperTitle,
+        firstName: document.getElementById('firstName').value.trim(),
+        lastName: document.getElementById('lastName').value.trim(),
+        fullName: document.getElementById('fullName').value.trim(),
+        dob: document.getElementById('dob').value.trim(),
+        gender: document.getElementById('gender').value,
+        nationality: document.getElementById('nationality').value.trim(),
+        bloodGroup: document.getElementById('bloodGroup').value,
+        nidNumber: nidNumber,
+        universityName: document.getElementById('universityName').value.trim(),
+        departmentName: document.getElementById('departmentName').value.trim(),
+        programDegree: document.getElementById('programDegree').value.trim(),
+        batch: document.getElementById('batch').value.trim(),
+        studentId: document.getElementById('studentId').value.trim(),
+        levelTerm: document.getElementById('levelTerm').value.trim(),
+        primaryPhone: primaryPhone,
+        altPhone: document.getElementById('altPhone').value.trim(),
+        email: email,
+        fbProfile: document.getElementById('fbProfile').value.trim(),
+        linkedInProfile: document.getElementById('linkedInProfile').value.trim(),
+        presentAddress: document.getElementById('presentAddress').value.trim(),
+        presentDivision: document.getElementById('presentDivision').value,
+        presentDistrict: document.getElementById('presentDistrict').value,
+        permanentAddress: document.getElementById('permanentAddress').value.trim(),
+        permanentDivision: document.getElementById('permanentDivision').value,
+        permanentDistrict: document.getElementById('permanentDistrict').value,
+        declaration: true,
+        ppPhoto: uploadedMedia.ppPhoto,
+        studentIdCard: uploadedMedia.studentIdCard,
+        regCard: uploadedMedia.regCard,
+        signature: uploadedMedia.signature
+      };
+
+      const submitRes = await Api.submitForm(payload);
+      if (!submitRes || !submitRes.success) {
+        throw new Error(submitRes ? submitRes.error : 'Submission failed on server.');
+      }
+
+      // Populate Confirmation Receipt
+      document.getElementById('receipt-sl').textContent = `SL #${submitRes.sl || '--'}`;
+      document.getElementById('receipt-timestamp').textContent = submitRes.timestamp || new Date().toLocaleString();
+      document.getElementById('receipt-name').textContent = payload.fullName;
+      document.getElementById('receipt-student-id').textContent = payload.studentId;
+      document.getElementById('receipt-university').textContent = `${payload.universityName} (${payload.departmentName})`;
+      document.getElementById('receipt-email').textContent = payload.email;
+      document.getElementById('receipt-phone').textContent = payload.primaryPhone;
+      document.getElementById('receipt-nid').textContent = payload.nidNumber;
+
+      // Update Media Thumbnails & Links in Receipt
+      function setMediaReceipt(prefix, mediaObj) {
+        const thumb = document.getElementById(`receipt-thumb-${prefix}`);
+        const linkImgbb = document.getElementById(`receipt-link-${prefix}-imgbb`);
+        const linkPost = document.getElementById(`receipt-link-${prefix}-postimage`);
+        const url = (mediaObj && (mediaObj.preferredUrl || mediaObj.imgbbUrl || mediaObj.postimageUrl)) || '';
+
+        if (thumb && url) thumb.src = url;
+        if (linkImgbb && mediaObj && mediaObj.imgbbUrl) {
+          linkImgbb.href = mediaObj.imgbbUrl;
+        }
+        if (linkPost && mediaObj && mediaObj.postimageUrl) {
+          linkPost.href = mediaObj.postimageUrl;
+        }
+      }
+
+      setMediaReceipt('pp', uploadedMedia.ppPhoto);
+      setMediaReceipt('student', uploadedMedia.studentIdCard);
+      setMediaReceipt('reg', uploadedMedia.regCard);
+      setMediaReceipt('sign', uploadedMedia.signature);
+
+      // Switch view to Confirmation Dossier
+      document.getElementById('registration-view').classList.add('hidden');
+      document.getElementById('confirmation-view').classList.remove('hidden');
+
+      const tabConf = document.getElementById('nav-tab-confirmation');
+      const tabForm = document.getElementById('nav-tab-form');
+      if (tabConf) tabConf.className = "px-3.5 py-2 rounded-lg text-sm font-semibold transition-all bg-primary-container text-on-primary shadow-xs";
+      if (tabForm) tabForm.className = "px-3.5 py-2 rounded-lg text-sm font-medium text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all";
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
     } catch (err) {
+      console.error('Submission Error:', err);
+      showStatus(`Error: ${err.message || 'Unable to submit registration. Please check your network and try again.'}`, true);
+    } finally {
       btnSubmit.disabled = false;
-      btnSubmitText.textContent = 'Submit Co-Author Registration';
-      btnSubmitSpinner.style.display = 'none';
-      showToast(err.message || 'Error communicating with Google Apps Script backend.', 'error');
+      btnSpinner.classList.add('hidden');
+      btnIcon.classList.remove('hidden');
+      btnText.textContent = 'Submit Co-Author Registration';
     }
   });
+}
 
-  // 8. Register Another Co-Author
-  btnSubmitAnother.addEventListener('click', function() {
-    form.reset();
-    document.getElementById('nationality').value = 'Bangladeshi';
+/**
+ * Universal Lightbox modal for research figures & photos
+ */
+window.openLightbox = function(imgSrc, caption = '') {
+  const modal = document.getElementById('lightbox-modal');
+  const img = document.getElementById('lightbox-img');
+  const cap = document.getElementById('lightbox-caption');
+  if (!modal || !img) return;
 
-    imageKeys.forEach(function(k) {
-      uploadedImages[k] = null;
-      resetUploadCard(k);
-    });
+  img.src = imgSrc;
+  if (cap) cap.textContent = caption;
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+};
 
-    fullNameManuallyEdited = false;
-    presentDistrictSelect.disabled = true;
-    presentDistrictSelect.innerHTML = '<option value="" disabled selected>Select Division First</option>';
-    permanentDistrictSelect.disabled = true;
-    permanentDistrictSelect.innerHTML = '<option value="" disabled selected>Select Division First</option>';
-
-    var validatedEls = document.querySelectorAll('.is-valid, .is-invalid');
-    validatedEls.forEach(function(el) {
-      el.classList.remove('is-valid');
-      el.classList.remove('is-invalid');
-    });
-
-    successScreen.style.display = 'none';
-    form.style.display = 'block';
-    checkFormValidity();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-
-  if (btnNewForm) {
-    btnNewForm.addEventListener('click', function() {
-      btnSubmitAnother.click();
-    });
+window.closeLightbox = function(e) {
+  if (e && e.target && e.target.id === 'lightbox-img') return;
+  const modal = document.getElementById('lightbox-modal');
+  if (modal) {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
   }
-
-  // Toast Notification Helper
-  function showToast(message, type) {
-    var container = document.getElementById('toast-container');
-    var toast = document.createElement('div');
-    toast.className = 'toast toast-' + (type || 'info');
-    toast.textContent = message;
-    container.appendChild(toast);
-    setTimeout(function() {
-      toast.style.opacity = '0';
-      toast.style.transform = 'translateY(10px)';
-      toast.style.transition = 'all 0.3s ease';
-      setTimeout(function() {
-        if (toast.parentNode) toast.parentNode.removeChild(toast);
-      }, 300);
-    }, 4500);
-  }
-
-})();
+};
