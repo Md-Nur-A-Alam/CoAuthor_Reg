@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>IEEE i-COSTE 2026 — Co-Author Registration</title>
+  <?!= include('Stylesheet') ?>
+  <?!= include('Assets') ?>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="top-navbar">
+    <div class="nav-container">
+      <a href="#" class="nav-brand-group">
+        <div class="nav-logos">
+          <img id="nav-icoste-logo" alt="i-COSTE 2026 Logo" class="nav-logo-img">
+          <div class="nav-logo-divider"></div>
+          <img id="nav-ieee-logo" alt="IEEE Logo" class="nav-logo-img">
+        </div>
+        <div class="nav-titles">
+          <div class="nav-main-title">
+            IEEE i-COSTE 2026
+            <span class="nav-badge">Co-Author Portal</span>
+          </div>
+          <div class="nav-sub-title">12th IEEE International Conference on Sustainable Technology and Engineering</div>
+        </div>
+      </a>
+      <div class="nav-actions">
+        <a href="?page=admin" class="nav-btn nav-btn-outline">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          Admin Portal
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Header Section -->
+  <section class="hero-header">
+    <div class="hero-container">
+      <div class="hero-pill-badge">
+        <span class="hero-pill-dot"></span>
+        Camera-Ready Co-Author Data Submission
+      </div>
+      <h1 class="hero-title hero-title-gradient">IEEE i-COSTE 2026</h1>
+      <p class="hero-theme">"Sustainable Technology for Humanity &amp; Global Impact"</p>
+
+      <div class="hero-meta-row">
+        <div class="hero-meta-item">
+          <svg class="hero-meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          1–3 November 2026
+        </div>
+        <div class="hero-meta-item">
+          <svg class="hero-meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          Best Western Heritage, Cox's Bazar, Bangladesh
+        </div>
+        <div class="hero-meta-item">
+          <svg class="hero-meta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          Host: Bangladesh University of Business and Technology (BUBT)
+        </div>
+      </div>
+
+      <!-- Urgent Deadline Notice Pill -->
+      <div class="urgent-notice-pill">
+        <svg class="urgent-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <span>Important: Authors of accepted papers must submit co-author details before the camera-ready deadline.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Registration Form Container -->
+  <main class="main-wrapper">
+    
+    <!-- Success Screen (Rendered after successful submission) -->
+    <div id="success-screen" class="content-card success-screen">
+      <div class="success-check-badge">&#10003;</div>
+      <h2 style="font-size: 1.8rem; font-weight: 800; color: #1E293B; margin-bottom: 0.5rem;">Registration Submitted!</h2>
+      <p style="color: #64748B; font-size: 1rem;">Thank you! Your co-author information has been submitted successfully.</p>
+
+      <div class="receipt-card">
+        <div class="receipt-row">
+          <span class="receipt-label">Serial Number (SL):</span>
+          <span id="receipt-sl" class="receipt-val">-</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-label">Paper ID:</span>
+          <span id="receipt-paper-id" class="receipt-val">-</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-label">Full Name:</span>
+          <span id="receipt-name" class="receipt-val">-</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-label">Submission Timestamp:</span>
+          <span id="receipt-timestamp" class="receipt-val">-</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-label">Verification Status:</span>
+          <span class="receipt-val" style="color: #059669;">Recorded &amp; Verified</span>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 1.5rem;">
+        <button type="button" id="btn-submit-another" class="nav-btn nav-btn-primary" style="padding: 0.75rem 1.4rem;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg>
+          Register Another Co-Author (Same Paper)
+        </button>
+        <button type="button" id="btn-new-form" class="nav-btn nav-btn-outline" style="color: #334155; border-color: #CBD5E1; padding: 0.75rem 1.4rem;">
+          Submit New Paper Registration
+        </button>
+      </div>
+    </div>
+
+    <!-- The Public Registration Form -->
+    <form id="coauthor-form" novalidate>
+
+      <!-- Section 1: Paper Information -->
+      <section class="content-card">
+        <div class="card-section-header">
+          <div class="icon-badge icon-badge-primary">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          </div>
+          <div class="card-title-group">
+            <h2>1. Accepted Paper Details</h2>
+            <p>Please enter the exact Paper ID and Title assigned to your accepted manuscript.</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group col-4">
+            <label class="form-label" for="paperId">Paper ID <span class="req-star">*</span></label>
+            <input type="text" id="paperId" name="paperId" class="form-input" placeholder="e.g. ieee-icoste_5213" required autocomplete="off">
+            <div class="input-helper">Format: ieee-icoste_xxxx</div>
+            <div class="input-error" id="err-paperId">Paper ID is required.</div>
+          </div>
+
+          <div class="form-group col-8">
+            <label class="form-label" for="paperTitle">Paper Title <span class="req-star">*</span></label>
+            <input type="text" id="paperTitle" name="paperTitle" class="form-input" placeholder="Enter complete accepted paper title" required autocomplete="off">
+            <div class="input-helper">Must match your accepted manuscript title</div>
+            <div class="input-error" id="err-paperTitle">Paper Title is required.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: Personal Information -->
+      <section class="content-card">
+        <div class="card-section-header">
+          <div class="icon-badge icon-badge-indigo">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </div>
+          <div class="card-title-group">
+            <h2>2. Co-Author Personal Information</h2>
+            <p>Provide verified personal details as they appear on official identification documents.</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group col-4">
+            <label class="form-label" for="firstName">First Name <span class="req-star">*</span></label>
+            <input type="text" id="firstName" name="firstName" class="form-input" placeholder="e.g. Mohammad" required>
+            <div class="input-error" id="err-firstName">First Name is required.</div>
+          </div>
+
+          <div class="form-group col-4">
+            <label class="form-label" for="lastName">Last Name <span class="req-star">*</span></label>
+            <input type="text" id="lastName" name="lastName" class="form-input" placeholder="e.g. Rahman" required>
+            <div class="input-error" id="err-lastName">Last Name is required.</div>
+          </div>
+
+          <div class="form-group col-4">
+            <label class="form-label" for="fullName">Full Name <span class="req-star">*</span></label>
+            <input type="text" id="fullName" name="fullName" class="form-input" placeholder="Auto-suggested (editable)" required>
+            <div class="input-helper">Will be printed on certificate</div>
+            <div class="input-error" id="err-fullName">Full Name is required.</div>
+          </div>
+
+          <div class="form-group col-3">
+            <label class="form-label" for="dob">Date of Birth <span class="req-star">*</span></label>
+            <input type="date" id="dob" name="dob" class="form-input" required>
+            <div class="input-error" id="err-dob">Valid past date required (15–100 yrs).</div>
+          </div>
+
+          <div class="form-group col-3">
+            <label class="form-label" for="gender">Gender <span class="req-star">*</span></label>
+            <select id="gender" name="gender" class="form-select" required>
+              <option value="" disabled selected>Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+            <div class="input-error" id="err-gender">Please select your gender.</div>
+          </div>
+
+          <div class="form-group col-3">
+            <label class="form-label" for="nationality">Nationality <span class="req-star">*</span></label>
+            <input type="text" id="nationality" name="nationality" class="form-input" value="Bangladeshi" required>
+            <div class="input-error" id="err-nationality">Nationality is required.</div>
+          </div>
+
+          <div class="form-group col-3">
+            <label class="form-label" for="bloodGroup">Blood Group <span class="req-star">*</span></label>
+            <select id="bloodGroup" name="bloodGroup" class="form-select" required>
+              <option value="" disabled selected>Select Group</option>
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+            </select>
+            <div class="input-error" id="err-bloodGroup">Please select blood group.</div>
+          </div>
+
+          <div class="form-group col-6">
+            <label class="form-label" for="nidNumber">NID Number <span class="req-star">*</span></label>
+            <input type="text" id="nidNumber" name="nidNumber" class="form-input" placeholder="10, 13, or 17 digit Bangladeshi NID" required maxlength="17">
+            <div class="input-helper">Must be 10, 13, or 17 digits</div>
+            <div class="input-error" id="err-nidNumber">Valid 10, 13, or 17-digit NID required.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Academic / Institutional Information -->
+      <section class="content-card">
+        <div class="card-section-header">
+          <div class="icon-badge icon-badge-cyan">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+          </div>
+          <div class="card-title-group">
+            <h2>3. Academic &amp; Institutional Affiliation</h2>
+            <p>Institutional identity and student status details.</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group col-6">
+            <label class="form-label" for="universityName">University / Institution Name <span class="req-star">*</span></label>
+            <input type="text" id="universityName" name="universityName" class="form-input" placeholder="e.g. BUBT / BUET / Dhaka University" required>
+            <div class="input-error" id="err-universityName">University Name is required.</div>
+          </div>
+
+          <div class="form-group col-6">
+            <label class="form-label" for="departmentName">Department Name <span class="req-star">*</span></label>
+            <input type="text" id="departmentName" name="departmentName" class="form-input" placeholder="e.g. Dept of Computer Science &amp; Engineering" required>
+            <div class="input-error" id="err-departmentName">Department Name is required.</div>
+          </div>
+
+          <div class="form-group col-4">
+            <label class="form-label" for="programDegree">Program / Degree <span class="req-star">*</span></label>
+            <input type="text" id="programDegree" name="programDegree" class="form-input" placeholder="e.g. B.Sc. in CSE / M.Sc. / Ph.D." required>
+            <div class="input-error" id="err-programDegree">Program / Degree is required.</div>
+          </div>
+
+          <div class="form-group col-4">
+            <label class="form-label" for="batch">Batch <span class="req-star">*</span></label>
+            <input type="text" id="batch" name="batch" class="form-input" placeholder="e.g. Batch 48 / 2022" required>
+            <div class="input-error" id="err-batch">Batch is required.</div>
+          </div>
+
+          <div class="form-group col-4">
+            <label class="form-label" for="studentId">Student ID <span class="req-star">*</span></label>
+            <input type="text" id="studentId" name="studentId" class="form-input" placeholder="e.g. 19202103001" required>
+            <div class="input-error" id="err-studentId">Student ID is required.</div>
+          </div>
+
+          <div class="form-group col-6">
+            <label class="form-label" for="levelTerm">Level-Term <span class="req-star">*</span></label>
+            <input type="text" id="levelTerm" name="levelTerm" class="form-input" placeholder="e.g. Level-4 Term-2 / Graduate" required>
+            <div class="input-error" id="err-levelTerm">Level-Term is required.</div>
+          </div>
+
+          <div class="form-group col-6">
+            <label class="form-label" for="universityIdNumber">University ID Number <span class="req-star">*</span></label>
+            <input type="text" id="universityIdNumber" name="universityIdNumber" class="form-input" placeholder="e.g. Registration No / University Card No" required>
+            <div class="input-error" id="err-universityIdNumber">University ID Number is required.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: Contact & Social Links -->
+      <section class="content-card">
+        <div class="card-section-header">
+          <div class="icon-badge icon-badge-teal">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          </div>
+          <div class="card-title-group">
+            <h2>4. Contact &amp; Address Information</h2>
+            <p>Active phone numbers, email, address, and profile links for conference correspondence.</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group col-4">
+            <label class="form-label" for="primaryPhone">Primary Phone Number <span class="req-star">*</span></label>
+            <input type="tel" id="primaryPhone" name="primaryPhone" class="form-input" placeholder="e.g. 017xxxxxxxx or +88017xxxxxxxx" required>
+            <div class="input-helper">Format: +8801xxxxxxxxx or 01xxxxxxxxx</div>
+            <div class="input-error" id="err-primaryPhone">Valid Bangladeshi mobile number required.</div>
+          </div>
+
+          <div class="form-group col-4">
+            <label class="form-label" for="altPhone">Alternative Phone Number <span class="req-star">*</span></label>
+            <input type="tel" id="altPhone" name="altPhone" class="form-input" placeholder="e.g. 018xxxxxxxx" required>
+            <div class="input-error" id="err-altPhone">Valid alternative BD mobile number required.</div>
+          </div>
+
+          <div class="form-group col-4">
+            <label class="form-label" for="email">Email Address <span class="req-star">*</span></label>
+            <input type="email" id="email" name="email" class="form-input" placeholder="e.g. author@university.edu" required>
+            <div class="input-error" id="err-email">Valid email address required.</div>
+          </div>
+
+          <div class="form-group col-6">
+            <label class="form-label" for="fbProfile">Facebook Profile Link <span class="req-star">*</span></label>
+            <input type="url" id="fbProfile" name="fbProfile" class="form-input" placeholder="https://www.facebook.com/username" required>
+            <div class="input-helper">Must start with http/https and contain facebook.com</div>
+            <div class="input-error" id="err-fbProfile">Valid Facebook profile URL required.</div>
+          </div>
+
+          <div class="form-group col-6">
+            <label class="form-label" for="linkedInProfile">LinkedIn Profile Link <span class="req-star">*</span></label>
+            <input type="url" id="linkedInProfile" name="linkedInProfile" class="form-input" placeholder="https://www.linkedin.com/in/username" required>
+            <div class="input-helper">Must start with http/https and contain linkedin.com</div>
+            <div class="input-error" id="err-linkedInProfile">Valid LinkedIn profile URL required.</div>
+          </div>
+
+          <div class="form-group col-6">
+            <label class="form-label" for="presentAddress">Present Address <span class="req-star">*</span></label>
+            <textarea id="presentAddress" name="presentAddress" class="form-textarea" placeholder="Current residential address, house/street, area..." required></textarea>
+            <div class="input-error" id="err-presentAddress">Present Address is required.</div>
+          </div>
+
+          <div class="form-group col-6">
+            <label class="form-label" for="permanentAddress">Permanent Address <span class="req-star">*</span></label>
+            <textarea id="permanentAddress" name="permanentAddress" class="form-textarea" placeholder="Permanent home address..." required></textarea>
+            <div class="input-error" id="err-permanentAddress">Permanent Address is required.</div>
+          </div>
+
+          <!-- Cascading Division & District Dropdowns -->
+          <div class="form-group col-6">
+            <label class="form-label" for="division">Division <span class="req-star">*</span></label>
+            <select id="division" name="division" class="form-select" required>
+              <option value="" disabled selected>Select Division</option>
+              <option value="Barishal">Barishal</option>
+              <option value="Chattogram">Chattogram</option>
+              <option value="Dhaka">Dhaka</option>
+              <option value="Khulna">Khulna</option>
+              <option value="Mymensingh">Mymensingh</option>
+              <option value="Rajshahi">Rajshahi</option>
+              <option value="Rangpur">Rangpur</option>
+              <option value="Sylhet">Sylhet</option>
+            </select>
+            <div class="input-error" id="err-division">Please select division.</div>
+          </div>
+
+          <div class="form-group col-6">
+            <label class="form-label" for="district">District <span class="req-star">*</span></label>
+            <select id="district" name="district" class="form-select" required disabled>
+              <option value="" disabled selected>Select Division First</option>
+            </select>
+            <div class="input-error" id="err-district">Please select district.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5: Documents & Photos Upload (4 Upload Slots) -->
+      <section class="content-card">
+        <div class="card-section-header">
+          <div class="icon-badge icon-badge-primary">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          </div>
+          <div class="card-title-group">
+            <h2>5. Required Documents &amp; Photos</h2>
+            <p>Upload all 4 required images (JPG / PNG, Max 5MB each). Images are securely uploaded via server proxy.</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          
+          <!-- Upload Slot 1: PP Size Photo -->
+          <div class="col-6">
+            <div class="upload-card-wrapper" id="dropzone-ppPhoto">
+              <div class="upload-idle-state" id="idle-ppPhoto">
+                <div class="upload-icon-circle">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </div>
+                <div class="upload-title">PP Size Photo <span class="req-star">*</span></div>
+                <div class="upload-hint">Formal passport-size photo (JPG, PNG &le; 5MB)</div>
+                <label class="upload-btn-trigger">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                  Choose File
+                  <input type="file" id="file-ppPhoto" class="file-input-hidden" accept="image/jpeg,image/png,image/jpg" data-key="ppPhoto">
+                </label>
+              </div>
+
+              <!-- Uploading Spinner -->
+              <div class="upload-spinner" id="spinner-ppPhoto">
+                <div class="spinner"></div>
+                <span style="font-size: 0.8rem; font-weight: 600; color: var(--color-primary);">Uploading image...</span>
+              </div>
+
+              <!-- Preview State -->
+              <div class="upload-preview-box" id="preview-ppPhoto">
+                <img id="thumb-ppPhoto" class="preview-thumb" alt="PP Photo">
+                <span class="preview-badge-success">&#10003; Uploaded</span>
+                <label class="upload-btn-trigger" style="margin-top: 0.4rem; padding: 0.25rem 0.6rem; font-size: 0.72rem;">
+                  Change File
+                  <input type="file" id="change-ppPhoto" class="file-input-hidden" accept="image/jpeg,image/png,image/jpg" data-key="ppPhoto">
+                </label>
+              </div>
+              <div class="input-error" id="err-ppPhoto">PP Size Photo is required.</div>
+            </div>
+          </div>
+
+          <!-- Upload Slot 2: Student ID Card Picture -->
+          <div class="col-6">
+            <div class="upload-card-wrapper" id="dropzone-studentIdCard">
+              <div class="upload-idle-state" id="idle-studentIdCard">
+                <div class="upload-icon-circle">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="9" cy="10" r="2"></circle><line x1="15" y1="8" x2="17" y2="8"></line><line x1="15" y1="12" x2="17" y2="12"></line></svg>
+                </div>
+                <div class="upload-title">Student ID Card Picture <span class="req-star">*</span></div>
+                <div class="upload-hint">Clear scan / photo of institutional ID card</div>
+                <label class="upload-btn-trigger">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                  Choose File
+                  <input type="file" id="file-studentIdCard" class="file-input-hidden" accept="image/jpeg,image/png,image/jpg" data-key="studentIdCard">
+                </label>
+              </div>
+
+              <!-- Uploading Spinner -->
+              <div class="upload-spinner" id="spinner-studentIdCard">
+                <div class="spinner"></div>
+                <span style="font-size: 0.8rem; font-weight: 600; color: var(--color-primary);">Uploading image...</span>
+              </div>
+
+              <!-- Preview State -->
+              <div class="upload-preview-box" id="preview-studentIdCard">
+                <img id="thumb-studentIdCard" class="preview-thumb" alt="Student ID Card">
+                <span class="preview-badge-success">&#10003; Uploaded</span>
+                <label class="upload-btn-trigger" style="margin-top: 0.4rem; padding: 0.25rem 0.6rem; font-size: 0.72rem;">
+                  Change File
+                  <input type="file" id="change-studentIdCard" class="file-input-hidden" accept="image/jpeg,image/png,image/jpg" data-key="studentIdCard">
+                </label>
+              </div>
+              <div class="input-error" id="err-studentIdCard">Student ID Card Picture is required.</div>
+            </div>
+          </div>
+
+          <!-- Upload Slot 3: (SSC/HSC) Registration Card Picture -->
+          <div class="col-6">
+            <div class="upload-card-wrapper" id="dropzone-regCard">
+              <div class="upload-idle-state" id="idle-regCard">
+                <div class="upload-icon-circle">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                </div>
+                <div class="upload-title">(SSC/HSC) Registration Card Picture <span class="req-star">*</span></div>
+                <div class="upload-hint">Clear scan / photo of board registration card</div>
+                <label class="upload-btn-trigger">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                  Choose File
+                  <input type="file" id="file-regCard" class="file-input-hidden" accept="image/jpeg,image/png,image/jpg" data-key="regCard">
+                </label>
+              </div>
+
+              <!-- Uploading Spinner -->
+              <div class="upload-spinner" id="spinner-regCard">
+                <div class="spinner"></div>
+                <span style="font-size: 0.8rem; font-weight: 600; color: var(--color-primary);">Uploading image...</span>
+              </div>
+
+              <!-- Preview State -->
+              <div class="upload-preview-box" id="preview-regCard">
+                <img id="thumb-regCard" class="preview-thumb" alt="Reg Card">
+                <span class="preview-badge-success">&#10003; Uploaded</span>
+                <label class="upload-btn-trigger" style="margin-top: 0.4rem; padding: 0.25rem 0.6rem; font-size: 0.72rem;">
+                  Change File
+                  <input type="file" id="change-regCard" class="file-input-hidden" accept="image/jpeg,image/png,image/jpg" data-key="regCard">
+                </label>
+              </div>
+              <div class="input-error" id="err-regCard">(SSC/HSC) Registration Card is required.</div>
+            </div>
+          </div>
+
+          <!-- Upload Slot 4: Applicant's Signature -->
+          <div class="col-6">
+            <div class="upload-card-wrapper" id="dropzone-signature">
+              <div class="upload-idle-state" id="idle-signature">
+                <div class="upload-icon-circle">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2l4 4-10 10H8v-4L18 2z"></path><path d="M4 22h16"></path></svg>
+                </div>
+                <div class="upload-title">Applicant's Signature <span class="req-star">*</span></div>
+                <div class="upload-hint">Clear photo / scan of handwritten signature</div>
+                <label class="upload-btn-trigger">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                  Choose File
+                  <input type="file" id="file-signature" class="file-input-hidden" accept="image/jpeg,image/png,image/jpg" data-key="signature">
+                </label>
+              </div>
+
+              <!-- Uploading Spinner -->
+              <div class="upload-spinner" id="spinner-signature">
+                <div class="spinner"></div>
+                <span style="font-size: 0.8rem; font-weight: 600; color: var(--color-primary);">Uploading image...</span>
+              </div>
+
+              <!-- Preview State -->
+              <div class="upload-preview-box" id="preview-signature">
+                <img id="thumb-signature" class="preview-thumb" alt="Signature">
+                <span class="preview-badge-success">&#10003; Uploaded</span>
+                <label class="upload-btn-trigger" style="margin-top: 0.4rem; padding: 0.25rem 0.6rem; font-size: 0.72rem;">
+                  Change File
+                  <input type="file" id="change-signature" class="file-input-hidden" accept="image/jpeg,image/png,image/jpg" data-key="signature">
+                </label>
+              </div>
+              <div class="input-error" id="err-signature">Applicant's Signature is required.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 6: Declaration & Submit -->
+      <section class="content-card">
+        <div class="declaration-card">
+          <label class="declaration-label">
+            <input type="checkbox" id="declaration" name="declaration" class="custom-checkbox" required>
+            <span class="declaration-text">
+              I hereby declare that all the information and documents provided above are true and correct to the best of my knowledge.
+            </span>
+          </label>
+          <div class="input-error" id="err-declaration" style="margin-left: 2rem;">You must accept the declaration to submit.</div>
+        </div>
+
+        <!-- Global Submit Button and Live Validation Banner -->
+        <div style="margin-top: 1.5rem;">
+          <div id="submit-notice-banner" style="font-size: 0.82rem; color: #64748B; text-align: center; margin-bottom: 0.8rem;">
+            Please fill in all mandatory fields and upload all 4 documents to enable submission.
+          </div>
+
+          <button type="submit" id="btn-submit" class="btn-submit-main" disabled>
+            <span id="btn-submit-text">Submit Co-Author Registration</span>
+            <div id="btn-submit-spinner" class="spinner" style="display: none; width: 22px; height: 22px; border-width: 2.5px; border-color: rgba(255,255,255,0.4); border-top-color: #FFFFFF;"></div>
+          </button>
+        </div>
+      </section>
+
+    </form>
+  </main>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div style="font-weight: 600; color: #CBD5E1;">&copy; 2026 IEEE i-COSTE. All rights reserved.</div>
+      <div style="font-size: 0.8rem; color: #64748B;">
+        12th IEEE International Conference on Sustainable Technology and Engineering &middot; Best Western Heritage, Cox's Bazar, Bangladesh
+      </div>
+      <div class="footer-links">
+        <a href="https://i-coste.org" target="_blank" rel="noopener">Official Conference Site</a>
+        <span>&middot;</span>
+        <a href="?page=admin">Admin Login</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Include Form Scripts -->
+  <?!= include('FormScript') ?>
+</body>
+</html>
