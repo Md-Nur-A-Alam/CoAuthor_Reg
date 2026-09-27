@@ -407,14 +407,26 @@ function initFormSubmission() {
       for (let i = 0; i < fileUploadTasks.length; i++) {
         const item = fileUploadTasks[i];
         btnText.textContent = `Uploading ${item.label} (${i + 1}/4)...`;
-        showStatus(`Archiving ${item.label} to dual-cloud storage (ImgBB & PostImage)...`);
+        showStatus(`Archiving ${item.label} to cloud vault...`);
 
         const f = selectedFiles[item.key];
-        const res = await Api.uploadImage(f.base64, f.fileName, f.mimeType, item.key);
-        if (!res || !res.success) {
-          throw new Error(res ? res.error : `Failed to upload ${item.label}`);
+        try {
+          const res = await Api.uploadImage(f.base64, f.fileName, f.mimeType, item.key);
+          if (res && res.success) {
+            uploadedMedia[item.key] = res;
+          } else {
+            throw new Error((res && res.error) || 'Upload failed');
+          }
+        } catch (uploadErr) {
+          console.warn(`Direct upload notice for ${item.label}:`, uploadErr);
+          // Fallback: pass the base64 and file metadata directly so server archives it during submit
+          uploadedMedia[item.key] = {
+            base64: f.base64,
+            fileName: f.fileName,
+            mimeType: f.mimeType,
+            preferredUrl: f.base64
+          };
         }
-        uploadedMedia[item.key] = res;
       }
 
       // Step B: Submit Form Data to Google Sheets API
@@ -478,14 +490,14 @@ function initFormSubmission() {
         const thumb = document.getElementById(`receipt-thumb-${prefix}`);
         const linkImgbb = document.getElementById(`receipt-link-${prefix}-imgbb`);
         const linkPost = document.getElementById(`receipt-link-${prefix}-postimage`);
-        const url = (mediaObj && (mediaObj.preferredUrl || mediaObj.imgbbUrl || mediaObj.postimageUrl)) || '';
+        const url = (mediaObj && (mediaObj.preferredUrl || mediaObj.imgbbUrl || mediaObj.postimageUrl || mediaObj.catboxUrl || mediaObj.driveUrl)) || (typeof mediaObj === 'string' ? mediaObj : '') || '';
 
         if (thumb && url) thumb.src = url;
-        if (linkImgbb && mediaObj && mediaObj.imgbbUrl) {
-          linkImgbb.href = mediaObj.imgbbUrl;
+        if (linkImgbb) {
+          linkImgbb.href = (mediaObj && mediaObj.imgbbUrl) || url || '#';
         }
-        if (linkPost && mediaObj && mediaObj.postimageUrl) {
-          linkPost.href = mediaObj.postimageUrl;
+        if (linkPost) {
+          linkPost.href = (mediaObj && (mediaObj.postimageUrl || mediaObj.catboxUrl)) || url || '#';
         }
       }
 

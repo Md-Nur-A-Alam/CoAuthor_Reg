@@ -194,7 +194,7 @@ async function loadSubmissions(silent = false) {
   try {
     const res = await Api.getResponses(sessionToken);
     if (res && res.success) {
-      allSubmissions = res.submissions || [];
+      allSubmissions = res.responses || res.submissions || [];
       updateBentoMetrics(allSubmissions);
       applyFilters();
       sessionRemainingSeconds = 20 * 60; // Refresh sliding session
@@ -216,6 +216,27 @@ async function loadSubmissions(silent = false) {
 }
 
 /**
+ * Helper to safely extract displayable image URL from object or string
+ */
+function getImageUrl(imgObj) {
+  if (!imgObj) return '';
+  if (typeof imgObj === 'string' && imgObj.trim().length > 5) return imgObj.trim();
+  if (typeof imgObj === 'object') {
+    return imgObj.preferred || imgObj.imgbb || imgObj.postimage || imgObj.driveUrl || imgObj.catboxUrl || '';
+  }
+  return '';
+}
+
+function getImageHostUrl(imgObj, hostKey) {
+  if (!imgObj) return '';
+  if (typeof imgObj === 'string') return imgObj;
+  if (typeof imgObj === 'object') {
+    return imgObj[hostKey] || imgObj.preferred || '';
+  }
+  return '';
+}
+
+/**
  * Calculate and Display Bento Metrics
  */
 function updateBentoMetrics(data) {
@@ -233,10 +254,10 @@ function updateBentoMetrics(data) {
     let imagesPresent = 0;
     ['ppPhoto', 'studentIdCard', 'regCard', 'signature'].forEach(k => {
       const obj = item[k];
-      if (obj && (obj.imgbb || obj.postimage || obj.preferred)) {
+      const url = getImageUrl(obj);
+      if (url) {
         imagesPresent++;
-        if (obj.imgbb) assetsCount++;
-        if (obj.postimage) assetsCount++;
+        assetsCount++;
       }
     });
     if (imagesPresent === 4) completeCredentials++;
@@ -306,7 +327,7 @@ function renderDesktopTable(data) {
   let html = '';
   data.forEach((sub, idx) => {
     const originalIndex = allSubmissions.indexOf(sub);
-    const avatarUrl = (sub.ppPhoto && (sub.ppPhoto.preferred || sub.ppPhoto.imgbb || sub.ppPhoto.postimage)) || '';
+    const avatarUrl = getImageUrl(sub.ppPhoto);
     const initial = (sub.fullName ? sub.fullName.charAt(0).toUpperCase() : 'A');
 
     html += `
@@ -395,7 +416,7 @@ function renderMobileCards(data) {
   let html = '';
   data.forEach((sub, idx) => {
     const originalIndex = allSubmissions.indexOf(sub);
-    const avatarUrl = (sub.ppPhoto && (sub.ppPhoto.preferred || sub.ppPhoto.imgbb || sub.ppPhoto.postimage)) || '';
+    const avatarUrl = getImageUrl(sub.ppPhoto);
     const initial = (sub.fullName ? sub.fullName.charAt(0).toUpperCase() : 'A');
 
     html += `
@@ -457,10 +478,10 @@ function renderMobileCards(data) {
 }
 
 function renderMiniDocBadge(label, imgObj, fullName = 'User', docType = 'Doc') {
-  if (!imgObj || (!imgObj.imgbb && !imgObj.postimage && !imgObj.preferred)) {
+  const url = getImageUrl(imgObj);
+  if (!url) {
     return `<span class="px-1.5 py-0.5 rounded bg-surface-container text-outline text-[9px] font-semibold">${label}</span>`;
   }
-  const url = imgObj.preferred || imgObj.imgbb || imgObj.postimage;
   const filename = `${fullName.replace(/\s+/g, '_')}_${docType}.jpg`;
 
   return `
@@ -523,7 +544,7 @@ window.downloadAllCandidatePhotos = async function(index) {
 
   let downloadedCount = 0;
   for (const p of photos) {
-    const url = p.obj && (p.obj.preferred || p.obj.imgbb || p.obj.postimage);
+    const url = getImageUrl(p.obj);
     if (url) {
       await downloadPicture(url, `SL${sl}_${nameSlug}_${p.label}.jpg`);
       downloadedCount++;
@@ -586,19 +607,19 @@ window.exportSingleUserCSV = function(index) {
     sub.permanentAddress || '',
     sub.permanentDivision || '',
     sub.permanentDistrict || '',
-    (sub.ppPhoto && (sub.ppPhoto.preferred || sub.ppPhoto.imgbb || sub.ppPhoto.postimage)) || '',
+    getImageUrl(sub.ppPhoto),
     sub.nidNumber || '',
     sub.declaration || 'Agreed',
     sub.paperId || '',
     sub.paperTitle || '',
-    (sub.ppPhoto && sub.ppPhoto.imgbb) || '',
-    (sub.ppPhoto && sub.ppPhoto.postimage) || '',
-    (sub.studentIdCard && sub.studentIdCard.imgbb) || '',
-    (sub.studentIdCard && sub.studentIdCard.postimage) || '',
-    (sub.regCard && sub.regCard.imgbb) || '',
-    (sub.regCard && sub.regCard.postimage) || '',
-    (sub.signature && sub.signature.imgbb) || '',
-    (sub.signature && sub.signature.postimage) || ''
+    getImageHostUrl(sub.ppPhoto, 'imgbb'),
+    getImageHostUrl(sub.ppPhoto, 'postimage'),
+    getImageHostUrl(sub.studentIdCard, 'imgbb'),
+    getImageHostUrl(sub.studentIdCard, 'postimage'),
+    getImageHostUrl(sub.regCard, 'imgbb'),
+    getImageHostUrl(sub.regCard, 'postimage'),
+    getImageHostUrl(sub.signature, 'imgbb'),
+    getImageHostUrl(sub.signature, 'postimage')
   ].map(escapeCsvCell);
 
   const csvContent = "\uFEFF" + [headers.join(','), row.join(',')].join('\r\n');
@@ -834,7 +855,7 @@ window.viewDetail = function(index) {
 };
 
 function renderModalDocSlot(label, imgObj, fullName = 'User', docType = 'Doc') {
-  const url = (imgObj && (imgObj.preferred || imgObj.imgbb || imgObj.postimage)) || '';
+  const url = getImageUrl(imgObj);
   const filename = `SL_${fullName.replace(/\s+/g, '_')}_${docType}.jpg`;
 
   if (!url) {
@@ -846,6 +867,11 @@ function renderModalDocSlot(label, imgObj, fullName = 'User', docType = 'Doc') {
       </div>
     `;
   }
+
+  const imgbb = (typeof imgObj === 'object' && imgObj.imgbb) || (url.includes('ibb.co') ? url : '');
+  const postimage = (typeof imgObj === 'object' && imgObj.postimage) || (url.includes('postimg') ? url : '');
+  const drive = (typeof imgObj === 'object' && imgObj.driveUrl) || (url.includes('drive.google') ? url : '');
+  const catbox = (typeof imgObj === 'object' && imgObj.catboxUrl) || (url.includes('catbox') ? url : '');
 
   return `
     <div class="interactive-card p-3 rounded-xl bg-surface-container-lowest border border-surface-container-high flex flex-col justify-between shadow-2xs group">
@@ -869,9 +895,9 @@ function renderModalDocSlot(label, imgObj, fullName = 'User', docType = 'Doc') {
 
         <!-- Cloud Direct Links -->
         <div class="flex items-center justify-between text-[10px] text-on-surface-variant pt-0.5">
-          ${imgObj.imgbb ? `<a href="${escapeHtml(imgObj.imgbb)}" target="_blank" class="text-primary hover:underline flex items-center gap-0.5"><span>ImgBB</span><span class="material-symbols-outlined text-[11px]">open_in_new</span></a>` : '<span class="text-outline">ImgBB: -</span>'}
+          ${imgbb ? `<a href="${escapeHtml(imgbb)}" target="_blank" class="text-primary hover:underline flex items-center gap-0.5"><span>ImgBB</span><span class="material-symbols-outlined text-[11px]">open_in_new</span></a>` : '<span class="text-outline">ImgBB: -</span>'}
           <span class="text-outline-variant">•</span>
-          ${imgObj.postimage ? `<a href="${escapeHtml(imgObj.postimage)}" target="_blank" class="text-primary hover:underline flex items-center gap-0.5"><span>PostImage</span><span class="material-symbols-outlined text-[11px]">open_in_new</span></a>` : '<span class="text-outline">PostImg: -</span>'}
+          ${postimage ? `<a href="${escapeHtml(postimage)}" target="_blank" class="text-primary hover:underline flex items-center gap-0.5"><span>PostImage</span><span class="material-symbols-outlined text-[11px]">open_in_new</span></a>` : (catbox ? `<a href="${escapeHtml(catbox)}" target="_blank" class="text-primary hover:underline flex items-center gap-0.5"><span>Catbox</span><span class="material-symbols-outlined text-[11px]">open_in_new</span></a>` : '<span class="text-outline">CDN: -</span>')}
         </div>
       </div>
     </div>
@@ -1054,19 +1080,19 @@ function exportSubmissionsCSV() {
       s.permanentAddress || '',
       s.permanentDivision || '',
       s.permanentDistrict || '',
-      (s.ppPhoto && (s.ppPhoto.preferred || s.ppPhoto.imgbb || s.ppPhoto.postimage)) || '',
+      getImageUrl(s.ppPhoto),
       s.nidNumber || '',
       s.declaration || 'Agreed',
       s.paperId || '',
       s.paperTitle || '',
-      (s.ppPhoto && s.ppPhoto.imgbb) || '',
-      (s.ppPhoto && s.ppPhoto.postimage) || '',
-      (s.studentIdCard && s.studentIdCard.imgbb) || '',
-      (s.studentIdCard && s.studentIdCard.postimage) || '',
-      (s.regCard && s.regCard.imgbb) || '',
-      (s.regCard && s.regCard.postimage) || '',
-      (s.signature && s.signature.imgbb) || '',
-      (s.signature && s.signature.postimage) || ''
+      getImageHostUrl(s.ppPhoto, 'imgbb'),
+      getImageHostUrl(s.ppPhoto, 'postimage'),
+      getImageHostUrl(s.studentIdCard, 'imgbb'),
+      getImageHostUrl(s.studentIdCard, 'postimage'),
+      getImageHostUrl(s.regCard, 'imgbb'),
+      getImageHostUrl(s.regCard, 'postimage'),
+      getImageHostUrl(s.signature, 'imgbb'),
+      getImageHostUrl(s.signature, 'postimage')
     ].map(escapeCsvCell);
   });
 

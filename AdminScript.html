@@ -177,7 +177,7 @@
           }
 
           if (response && response.success) {
-            allSubmissions = response.responses || [];
+            allSubmissions = response.responses || response.submissions || [];
             updateStats();
             renderTable();
           } else {
@@ -323,7 +323,7 @@
   }
 
   function renderMiniThumb(imgObj, label) {
-    var url = imgObj ? (imgObj.preferred || imgObj.imgbb || imgObj.postimage) : null;
+    var url = imgObj ? (typeof imgObj === 'string' ? imgObj : (imgObj.preferred || imgObj.imgbb || imgObj.postimage || imgObj.driveUrl || imgObj.catboxUrl)) : null;
     if (url) {
       return '<img src="' + escapeHtml(url) + '" class="thumb-mini" title="' + label + '" onclick="window.openLightbox(\'' + escapeQuotes(url) + '\')">';
     }
@@ -414,9 +414,10 @@
   };
 
   function renderModalPhotoBox(imgObj, title) {
-    var preferred = imgObj ? (imgObj.preferred || imgObj.imgbb || imgObj.postimage) : null;
-    var imgbb = imgObj ? imgObj.imgbb : null;
-    var postimage = imgObj ? imgObj.postimage : null;
+    var preferred = imgObj ? (typeof imgObj === 'string' ? imgObj : (imgObj.preferred || imgObj.imgbb || imgObj.postimage || imgObj.driveUrl || imgObj.catboxUrl)) : null;
+    var imgbb = imgObj && typeof imgObj === 'object' ? imgObj.imgbb : null;
+    var postimage = imgObj && typeof imgObj === 'object' ? imgObj.postimage : null;
+    var cdn = imgObj && typeof imgObj === 'object' ? (imgObj.catboxUrl || imgObj.driveUrl) : null;
 
     var html = '<div class="modal-photo-box">';
     if (preferred) {
@@ -428,6 +429,7 @@
     html += '<div class="modal-photo-links">';
     if (imgbb) html += '<a href="' + escapeHtml(imgbb) + '" target="_blank" rel="noopener">ImgBB</a>';
     if (postimage) html += '<a href="' + escapeHtml(postimage) + '" target="_blank" rel="noopener">PostImage</a>';
+    if (cdn && !imgbb && !postimage) html += '<a href="' + escapeHtml(cdn) + '" target="_blank" rel="noopener">CDN Vault</a>';
     html += '</div>';
     html += '</div>';
     return html;

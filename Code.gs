@@ -170,8 +170,22 @@ function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('IEEE i-COSTE 2026')
     .addItem('Ensure Responses Schema', 'ensureResponsesSchema')
+    .addItem('Authorize Google Drive & Services', 'authorizeServices')
     .addItem('Test Third-Party API Keys', 'testApiKeys_')
     .addToUi();
+}
+
+/**
+ * One-click helper to prompt and grant OAuth permissions for Drive, Sheets, and UrlFetch.
+ */
+function authorizeServices() {
+  DriveApp.getRootFolder();
+  SpreadsheetApp.getActiveSpreadsheet();
+  UrlFetchApp.fetch('https://www.google.com');
+  Logger.log('Services authorized successfully.');
+  try {
+    SpreadsheetApp.getUi().alert('Authorization Status', 'Google Drive, Spreadsheets, and Network services are successfully authorized!', SpreadsheetApp.getUi().ButtonSet.OK);
+  } catch (e) {}
 }
 
 /**
@@ -251,6 +265,20 @@ function ensureResponsesSchema_() {
 }
 
 /**
+ * Cleans up and extracts raw HTTP/HTTPS URLs from cell content,
+ * stripping extra quotes, whitespace, or =HYPERLINK("...", ...) formulas.
+ */
+function cleanUrl_(val) {
+  if (!val) return '';
+  var str = String(val).trim();
+  if (!str) return '';
+  var match = str.match(/https?:\/\/[^\s"',)]+/i);
+  if (match) return match[0];
+  if (/^https?:\/\//i.test(str)) return str;
+  return str;
+}
+
+/**
  * Builds a normalized lookup map of header names to 0-based column indices.
  */
 function getHeaderMap_(sheet) {
@@ -313,8 +341,8 @@ function getApiKey_(serverName) {
 
 /**
  * Multi-cloud image upload proxy.
- * Prioritizes ImgBB & PostImage when keys exist, and natively backs up to Google Drive
- * so submissions NEVER fail due to missing third-party keys or quotas.
+ * Prioritizes ImgBB & PostImage when keys exist, includes zero-config Catbox CDN,
+ * and natively backs up to Google Drive so submissions NEVER fail.
  */
 function uploadImage(base64Data, fileName, mimeType, fieldKey) {
   try {
@@ -333,6 +361,7 @@ function uploadImage(base64Data, fileName, mimeType, fieldKey) {
 
     var imgbbUrl = null;
     var postimageUrl = null;
+    var catboxUrl = null;
     var driveUrl = null;
     var driveThumbnailUrl = null;
     var errors = [];
@@ -359,7 +388,15 @@ function uploadImage(base64Data, fileName, mimeType, fieldKey) {
       }
     }
 
-    // 3. Native Google Drive Cloud Vault (Zero-Configuration, Never Fails)
+    // 3. Try Catbox Cloud Storage (Zero-Configuration, Free, Unlimited)
+    try {
+      catboxUrl = uploadToCatbox_(cleanBase64, safeFileName, safeMimeType);
+    } catch (e) {
+      Logger.log('Catbox upload note for ' + fieldKey + ': ' + e.message);
+      errors.push('Catbox: ' + e.message);
+    }
+
+    // 4. Native Google Drive Cloud Vault
     try {
       var driveRes = uploadToGoogleDrive_(cleanBase64, safeFileName, safeMimeType, fieldKey);
       if (driveRes) {
@@ -372,10 +409,10 @@ function uploadImage(base64Data, fileName, mimeType, fieldKey) {
     }
 
     // Determine primary and secondary display URLs
-    var preferredUrl = imgbbUrl || postimageUrl || driveThumbnailUrl || driveUrl;
-    var secondaryUrl = postimageUrl || driveUrl || driveThumbnailUrl || imgbbUrl;
+    var preferredUrl = imgbbUrl || postimageUrl || catboxUrl || driveThumbnailUrl || driveUrl;
+    var fallbackUrl = catboxUrl || driveUrl || driveThumbnailUrl || postimageUrl || imgbbUrl;
 
-    if (!preferredUrl) {
+    if (!preferredUrl && !fallbackUrl) {
       return {
         success: false,
         error: 'Image upload failed for ' + fieldKey + '. Details: ' + (errors.join('; ') || 'Storage error')
@@ -384,10 +421,11 @@ function uploadImage(base64Data, fileName, mimeType, fieldKey) {
 
     return {
       success: true,
-      imgbbUrl: imgbbUrl || driveThumbnailUrl || driveUrl,
-      postimageUrl: postimageUrl || driveUrl || driveThumbnailUrl,
+      imgbbUrl: imgbbUrl || catboxUrl || driveThumbnailUrl || driveUrl,
+      postimageUrl: postimageUrl || catboxUrl || driveUrl || driveThumbnailUrl,
+      catboxUrl: catboxUrl,
       driveUrl: driveUrl,
-      preferredUrl: preferredUrl
+      preferredUrl: preferredUrl || fallbackUrl
     };
   } catch (err) {
     return { success: false, error: err.message };
@@ -395,11 +433,52 @@ function uploadImage(base64Data, fileName, mimeType, fieldKey) {
 }
 
 /**
+ * Uploads an image to Catbox (free, reliable image hosting, no key needed).
+ */
+function uploadToCatbox_(base64Data, fileName, mimeType) {
+  var cleanBase64 = base64Data;
+  if (cleanBase64.indexOf(',') > -1) {
+    cleanBase64 = cleanBase64.split(',')[1];
+  }
+
+  var bytes = Utilities.base64Decode(cleanBase64);
+  var safeMime = mimeType || 'image/jpeg';
+  var safeName = fileName || ('icoste_upload_' + new Date().getTime() + '.jpg');
+  var blob = Utilities.newBlob(bytes, safeMime, safeName);
+
+  var payload = {
+    reqtype: 'fileupload',
+    fileToUpload: blob
+  };
+
+  var options = {
+    method: 'post',
+    payload: payload,
+    muteHttpExceptions: true
+  };
+
+  var response = UrlFetchApp.fetch('https://catbox.moe/user/api.php', options);
+  var code = response.getResponseCode();
+  var text = response.getContentText().trim();
+
+  if (code >= 200 && code < 300 && text.indexOf('http') === 0) {
+    return text;
+  }
+
+  throw new Error('Catbox returned status ' + code + ': ' + text);
+}
+
+/**
  * Uploads an image natively to Google Drive in the IEEE_iCOSTE_2026_Uploads folder.
  * Zero-configuration and completely reliable.
  */
 function uploadToGoogleDrive_(base64Data, fileName, mimeType, fieldKey) {
-  var bytes = Utilities.base64Decode(base64Data);
+  var cleanBase64 = base64Data;
+  if (cleanBase64.indexOf(',') > -1) {
+    cleanBase64 = cleanBase64.split(',')[1];
+  }
+
+  var bytes = Utilities.base64Decode(cleanBase64);
   var safeMime = mimeType || 'image/jpeg';
   var safeName = fileName || ('icoste_' + (fieldKey || 'upload') + '_' + new Date().getTime() + '.jpg');
   var blob = Utilities.newBlob(bytes, safeMime, safeName);
@@ -414,7 +493,11 @@ function uploadToGoogleDrive_(base64Data, fileName, mimeType, fieldKey) {
   }
 
   var file = folder.createFile(blob);
-  file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  try {
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  } catch (e) {
+    Logger.log('Drive setSharing note: ' + e.message);
+  }
 
   var fileId = file.getId();
   var driveThumbnailUrl = 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w1000';
@@ -601,13 +684,13 @@ function validateFormData_(data) {
     errors.push('You must agree to the declaration statement.');
   }
 
-  // 4 Images validation (must have at least one URL per image)
+  // 4 Images validation (must have at least one URL or base64 data per image)
   function checkImg(obj, label) {
     if (!obj) {
       errors.push(label + ' is required. Please upload the image.');
       return;
     }
-    var hasValidUrl = obj.imgbbUrl || obj.postimageUrl || obj.driveUrl || obj.preferredUrl || obj.preferred || (typeof obj === 'string' && obj.trim().length > 5);
+    var hasValidUrl = obj.imgbbUrl || obj.postimageUrl || obj.driveUrl || obj.catboxUrl || obj.preferredUrl || obj.preferred || obj.base64 || (typeof obj === 'string' && obj.trim().length > 5);
     if (!hasValidUrl) {
       errors.push(label + ' is required. Please upload the image.');
     }
@@ -709,27 +792,63 @@ function submitCoAuthorForm(formData) {
     setField("Permanent_Division", String(formData.permanentDivision).trim());
     setField("Permanent_District", String(formData.permanentDistrict).trim());
 
-    // Preferred PP Photo
-    var ppPreferred = (formData.ppPhoto && (formData.ppPhoto.preferredUrl || formData.ppPhoto.imgbbUrl || formData.ppPhoto.postimageUrl)) || '';
-    setField("PP Size Photo", ppPreferred);
+    // Helper to resolve or lazily upload image if needed
+    function resolveImage(imgObj, fieldKey) {
+      if (!imgObj) return { preferred: '', imgbb: '', postimage: '', drive: '', catbox: '' };
+      if (typeof imgObj === 'string') {
+        var clean = cleanUrl_(imgObj);
+        return { preferred: clean, imgbb: clean, postimage: clean, drive: clean, catbox: clean };
+      }
+      // If image came with base64 but wasn't yet uploaded to cloud
+      if (imgObj.base64 && !imgObj.preferredUrl && !imgObj.imgbbUrl && !imgObj.catboxUrl && !imgObj.driveUrl) {
+        try {
+          var uploadRes = uploadImage(imgObj.base64, imgObj.fileName, imgObj.mimeType, fieldKey);
+          if (uploadRes && uploadRes.success) {
+            return {
+              preferred: uploadRes.preferredUrl || '',
+              imgbb: uploadRes.imgbbUrl || '',
+              postimage: uploadRes.postimageUrl || '',
+              drive: uploadRes.driveUrl || '',
+              catbox: uploadRes.catboxUrl || ''
+            };
+          }
+        } catch (uErr) {
+          Logger.log('Lazy upload error for ' + fieldKey + ': ' + uErr.message);
+        }
+      }
+      var pref = cleanUrl_(imgObj.preferredUrl || imgObj.preferred || imgObj.imgbbUrl || imgObj.postimageUrl || imgObj.catboxUrl || imgObj.driveUrl || '');
+      return {
+        preferred: pref,
+        imgbb: cleanUrl_(imgObj.imgbbUrl || pref),
+        postimage: cleanUrl_(imgObj.postimageUrl || pref),
+        drive: cleanUrl_(imgObj.driveUrl || pref),
+        catbox: cleanUrl_(imgObj.catboxUrl || pref)
+      };
+    }
 
+    var ppMedia = resolveImage(formData.ppPhoto, 'ppPhoto');
+    var idMedia = resolveImage(formData.studentIdCard, 'studentIdCard');
+    var regMedia = resolveImage(formData.regCard, 'regCard');
+    var sigMedia = resolveImage(formData.signature, 'signature');
+
+    setField("PP Size Photo", ppMedia.preferred);
     setField("NID Number", String(formData.nidNumber).trim());
     setField("Declaration", "Agreed");
     setField("Paper ID", (formData.paperId ? String(formData.paperId).trim() : ''));
     setField("Paper Title", (formData.paperTitle ? String(formData.paperTitle).trim() : ''));
 
     // Specific host URLs
-    setField("PP Size Photo (ImgBB)", (formData.ppPhoto && formData.ppPhoto.imgbbUrl) || '');
-    setField("PP Size Photo (PostImage)", (formData.ppPhoto && formData.ppPhoto.postimageUrl) || '');
+    setField("PP Size Photo (ImgBB)", ppMedia.imgbb);
+    setField("PP Size Photo (PostImage)", ppMedia.postimage);
 
-    setField("Student ID Card Picture (ImgBB)", (formData.studentIdCard && formData.studentIdCard.imgbbUrl) || '');
-    setField("Student ID Card Picture (PostImage)", (formData.studentIdCard && formData.studentIdCard.postimageUrl) || '');
+    setField("Student ID Card Picture (ImgBB)", idMedia.imgbb);
+    setField("Student ID Card Picture (PostImage)", idMedia.postimage);
 
-    setField("(SSC/HSC) Registration Card Picture (ImgBB)", (formData.regCard && formData.regCard.imgbbUrl) || '');
-    setField("(SSC/HSC) Registration Card Picture (PostImage)", (formData.regCard && formData.regCard.postimageUrl) || '');
+    setField("(SSC/HSC) Registration Card Picture (ImgBB)", regMedia.imgbb);
+    setField("(SSC/HSC) Registration Card Picture (PostImage)", regMedia.postimage);
 
-    setField("Applicant's Signature (ImgBB)", (formData.signature && formData.signature.imgbbUrl) || '');
-    setField("Applicant's Signature (PostImage)", (formData.signature && formData.signature.postimageUrl) || '');
+    setField("Applicant's Signature (ImgBB)", sigMedia.imgbb);
+    setField("Applicant's Signature (PostImage)", sigMedia.postimage);
 
     // Append to sheet
     sheet.appendRow(rowArray);
@@ -859,6 +978,7 @@ function getAdminResponses(token) {
     return {
       success: true,
       responses: [],
+      submissions: [],
       role: session.role,
       username: session.username
     };
@@ -881,18 +1001,21 @@ function getAdminResponses(token) {
     var row = rows[i];
     var sheetRowIndex = i + 2;
 
-    var ppImgbb = getVal(row, "PP Size Photo (ImgBB)");
-    var ppPost = getVal(row, "PP Size Photo (PostImage)");
-    var ppDirect = getVal(row, "PP Size Photo");
+    var ppImgbb = cleanUrl_(getVal(row, "PP Size Photo (ImgBB)"));
+    var ppPost = cleanUrl_(getVal(row, "PP Size Photo (PostImage)"));
+    var ppDirect = cleanUrl_(getVal(row, "PP Size Photo") || getVal(row, "PP Photo") || getVal(row, "Photo"));
 
-    var idImgbb = getVal(row, "Student ID Card Picture (ImgBB)");
-    var idPost = getVal(row, "Student ID Card Picture (PostImage)");
+    var idImgbb = cleanUrl_(getVal(row, "Student ID Card Picture (ImgBB)"));
+    var idPost = cleanUrl_(getVal(row, "Student ID Card Picture (PostImage)"));
+    var idDirect = cleanUrl_(getVal(row, "Student ID Card Picture") || getVal(row, "Student ID Card") || getVal(row, "Student ID Photo"));
 
-    var regImgbb = getVal(row, "(SSC/HSC) Registration Card Picture (ImgBB)");
-    var regPost = getVal(row, "(SSC/HSC) Registration Card Picture (PostImage)");
+    var regImgbb = cleanUrl_(getVal(row, "(SSC/HSC) Registration Card Picture (ImgBB)"));
+    var regPost = cleanUrl_(getVal(row, "(SSC/HSC) Registration Card Picture (PostImage)"));
+    var regDirect = cleanUrl_(getVal(row, "(SSC/HSC) Registration Card Picture") || getVal(row, "Registration Card Picture") || getVal(row, "Registration Card"));
 
-    var sigImgbb = getVal(row, "Applicant's Signature (ImgBB)");
-    var sigPost = getVal(row, "Applicant's Signature (PostImage)");
+    var sigImgbb = cleanUrl_(getVal(row, "Applicant's Signature (ImgBB)"));
+    var sigPost = cleanUrl_(getVal(row, "Applicant's Signature (PostImage)"));
+    var sigDirect = cleanUrl_(getVal(row, "Applicant's Signature") || getVal(row, "Signature"));
 
     var rawTs = getVal(row, "Timestamp");
     var formattedTs = rawTs instanceof Date ?
@@ -938,17 +1061,17 @@ function getAdminResponses(token) {
       studentIdCard: {
         imgbb: idImgbb,
         postimage: idPost,
-        preferred: idImgbb || idPost || null
+        preferred: idDirect || idImgbb || idPost || null
       },
       regCard: {
         imgbb: regImgbb,
         postimage: regPost,
-        preferred: regImgbb || regPost || null
+        preferred: regDirect || regImgbb || regPost || null
       },
       signature: {
         imgbb: sigImgbb,
         postimage: sigPost,
-        preferred: sigImgbb || sigPost || null
+        preferred: sigDirect || sigImgbb || sigPost || null
       }
     });
   }
@@ -956,6 +1079,7 @@ function getAdminResponses(token) {
   return {
     success: true,
     responses: results,
+    submissions: results,
     role: session.role,
     username: session.username
   };

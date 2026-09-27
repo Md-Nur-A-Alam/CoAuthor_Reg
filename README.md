@@ -94,17 +94,16 @@ The backend code dynamically binds by header name to row 1 of the `Responses` ta
 1. Open your Google Sheet:
    [https://docs.google.com/spreadsheets/d/1SL8JUzc88AAaOzQABn49JfF9d6omrmAQ_qgIthiokZo/edit](https://docs.google.com/spreadsheets/d/1SL8JUzc88AAaOzQABn49JfF9d6omrmAQ_qgIthiokZo/edit)
 2. Go to **Extensions** > **Apps Script**.
-3. In the Apps Script editor, open `Code.gs` and paste the contents of `Code.gs` from this project.
-   *(You do not need any HTML files inside Apps Script since the frontend is hosted on GitHub/Netlify!)*
-4. Click **Deploy** > **Manage deployments** (or **New deployment**):
-   - Choose your existing Web App deployment or create a new one.
+3. In the Apps Script editor, open `Code.gs` and replace with the updated `Code.gs`.
+4. (Optional but recommended) In the function dropdown at the top, select `authorizeServices` and click **Run** once to authorize Google Drive & Network access.
+5. Click **Deploy** > **Manage deployments** (or **New deployment**):
    - Click the pencil edit icon (or **New version**).
    - Version: **New version**.
    - Execute as: **Me**.
    - Who has access: **Anyone**.
    - Click **Deploy**.
-5. Copy your Web App URL (e.g. `https://script.google.com/macros/s/.../exec`).
-6. If the URL changed, open [js/config.js](file:///d:/BlackPuzzle/i-coste%20conference/co_authro_info/js/config.js) and paste your URL into `API_URL`.
+6. Copy your Web App URL (e.g. `https://script.google.com/macros/s/.../exec`).
+7. If the URL changed, open [js/config.js](file:///d:/BlackPuzzle/i-coste%20conference/co_authro_info/js/config.js) and paste your URL into `API_URL`.
 
 ---
 
